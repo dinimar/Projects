@@ -7,7 +7,7 @@
 
 int main(int argc, char const *argv[])
 {
-	std::cout << std::setprecision(atoi(argv[1])) << std::endl;
+	std::cout << std::setprecision(atoi(argv[1])) << M_PI << std::endl;
 
 	return 0;
 }
