@@ -12,10 +12,13 @@ struct box
 };
 
 void ShowBox(const box &boxx);
+void ChangeVolume(box &boxx, float height, float width, float length);
 
 int main(int argc, char const *argv[])
 {
 	struct box boxx = { "TestBox", 1.5, 2.5, 3.5, 4.5 };
+	ShowBox(boxx);
+	ChangeVolume(boxx, 1, 2, 3);
 	ShowBox(boxx);
 
 	return 0;
@@ -27,5 +30,13 @@ void ShowBox(const box &boxx)
 	cout << "Height: " << boxx.height << endl;
 	cout << "Width: " << boxx.width << endl;
 	cout << "Length: " << boxx.length << endl;
-	cout << "Volume: " << boxx.volume << endl;
+	cout << "Volume: " << boxx.volume << endl << endl;
+}
+
+void ChangeVolume(box &boxx, float height, float width, float length)
+{
+	boxx.height = height;
+	boxx.width = width;
+	boxx.length = length;
+	boxx.volume = height * width * length;
 }
