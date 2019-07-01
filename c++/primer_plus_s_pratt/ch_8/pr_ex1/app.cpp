@@ -1,6 +1,6 @@
 #ifndef GOLF_H
 #define GOLF_H
-#include <golf.h>
+#include "golf.h"
 #include <iostream>
 #endif
 
