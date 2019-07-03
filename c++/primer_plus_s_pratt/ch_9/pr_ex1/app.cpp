@@ -1,21 +1,26 @@
-#include "bank_a.h"
+#ifndef GOLF_H
+#define GOLF_H
+#include "golf.h"
 #include <iostream>
-#include <string>
+#endif
 
 int main(int argc, char const *argv[])
 {
-	using namespace std;
+	golf g = {"Name", 50};
+	showgolf(g);
 
-	BankA bank_a(string("Rockfeller"), string("5051"), 1000);
-	bank_a.show();
 
-	cout << "\nDepositing 10 units:\n";
-	bank_a.deposit(10);
-	bank_a.show();
+	std::cout << "\nvoid setgolf():\n";
+	setgolf(g, "Boris Becker", 100);
+	showgolf(g);
 
-	cout << "\nWithdrawig 1000 units:\n";
-	bank_a.withdraw(1000);
-	bank_a.show();
+	std::cout << "\nint setgolf():\n";
+	setgolf(g);
+	showgolf(g);
+
+	std::cout << "\nvoid handicap():\n";
+	handicap(g, 34);
+	showgolf(g);
 
 	return 0;
 }
