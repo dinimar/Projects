@@ -14,7 +14,9 @@ Queue::~Queue() {}
 
 bool Queue::isempty() const {}
 
-bool Queue::isfull() const {}
+bool Queue::isfull() const {
+    return (items == qsize) ? true : false;
+}
 
 int Queue::queuecount() const {
     return items;
