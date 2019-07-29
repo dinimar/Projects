@@ -10,7 +10,15 @@ Queue::Queue(int qs):qsize(qs) {
     items = 0;
 }
 
-Queue::~Queue() {}
+Queue::~Queue() {
+    Node *temp;
+    while (front != nullptr) // while queue is not empty
+    {
+        temp = front; //
+        front = front->next; //
+        delete temp; //
+    }
+}
 
 bool Queue::isempty() const {
     return (items == 0) ? true : false;
