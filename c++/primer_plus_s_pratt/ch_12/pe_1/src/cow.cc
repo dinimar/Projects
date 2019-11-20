@@ -23,7 +23,12 @@ Cow::Cow() {
 
 Cow::Cow(const char * nm, const char * ho, double wt) {
     // set name value
-    strcpy(name, nm);
+    if (strlen(nm) > 19) {
+        for(int i=0; i<19; i++) name[i] = *(nm+i);
+        name[19] = '\0';
+    } else {
+        strcpy(name, nm);
+    }
     // set hobby value
     hobby = new char[strlen(ho)+1];
     strcpy(hobby, ho);
