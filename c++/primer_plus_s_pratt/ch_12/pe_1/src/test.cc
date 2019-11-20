@@ -14,5 +14,9 @@ int main(int argc, char** argv) {
 
     Cow cow3{"Test more than nineteen symbols initalization.", "hobby2", 100};
     cow3.showCow();
+
+    Cow copyCow = cow3;
+    copyCow.showCow();
+
     return 0;
 }

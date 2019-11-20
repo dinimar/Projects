@@ -36,6 +36,22 @@ Cow::Cow(const char * nm, const char * ho, double wt) {
     weight = wt;
 }
 
+Cow::Cow(const Cow &c) {
+    // set name value
+    if (strlen(c.name) > 19) {
+        for(int i=0; i<19; i++) name[i] = *(c.name+i);
+        name[19] = '\0';
+    } else {
+        strcpy(name, c.name);
+    }
+    // set hobby value
+    delete[] hobby;
+    hobby = new char[strlen(c.hobby)+1];
+    strcpy(hobby, c.hobby);
+    // set weight value
+    weight = c.weight;
+}
+
 Cow::~Cow() {
     delete[] hobby;
 }
