@@ -21,6 +21,16 @@ Cow::Cow() {
     weight = 100;
 }
 
+Cow::Cow(const char * nm, const char * ho, double wt) {
+    // set name value
+    strcpy(name, nm);
+    // set hobby value
+    hobby = new char[strlen(ho)+1];
+    strcpy(hobby, ho);
+    // set weight value
+    weight = wt;
+}
+
 Cow::~Cow() {
     delete[] hobby;
 }
@@ -28,6 +38,6 @@ Cow::~Cow() {
 void Cow::showCow() const {
     cout << "Name: " << name << endl;
     cout << "Hobby: " << hobby << endl;
-    cout << "Weight: " << weight << endl;
+    cout << "Weight: " << weight << endl << endl;
 }
 
