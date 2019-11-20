@@ -6,8 +6,11 @@
 #include "cow.h"
 
 int main(int argc, char** argv) {
-    Cow cow;
-    cow.showCow();
+    Cow cow1;
+    cow1.showCow();
+
+    Cow cow2{"Cow2", "hobby2", 100};
+    cow2.showCow();
 
     return 0;
 }
