@@ -29,6 +29,7 @@ public:
     ~String();
 // destructor
     int length () const { return len; }
+    void stringUp();
 // overloaded operator methods
     String & operator=(const String &);
     String & operator=(const char *);
