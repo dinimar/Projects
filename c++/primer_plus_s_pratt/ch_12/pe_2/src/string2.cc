@@ -49,10 +49,11 @@ String::~String()
 
 // overloaded operator methods
 // add a String to a String
-//String String::operator+(const String & st) const
-//{
-//    return  String(std::strcat(str, st.str));
-//}
+String String::operator+(const String & st) const
+{
+//    char *tmpStr = new char[]
+    return  String(std::strcat(str, st.str));
+}
 
 // add a C string to a String
 //String String::operator+(const char* s) const
@@ -93,8 +94,10 @@ String operator+(char * s, const String &st)
     char * tmpStr = new char[std::strlen(s)+st.len+1];
     std::strcpy(tmpStr, s);
     std::strcat(tmpStr, st.str);
+    String res(tmpStr);
+    delete [] tmpStr;
 
-    return String(tmpStr);
+    return res;
 }
 
 bool operator<(const String &st1, const String &st2)
