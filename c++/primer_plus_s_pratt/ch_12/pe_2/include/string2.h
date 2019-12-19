@@ -32,7 +32,7 @@ public:
 // overloaded operator methods
     String & operator=(const String &);
     String & operator=(const char *);
-//    String operator+(const String &) const;
+    String operator+(const String &) const;
 //    String operator+(const char *) const;
     char & operator[](int i);
     const char & operator[](int i) const;
