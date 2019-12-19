@@ -51,8 +51,7 @@ String::~String()
 // add a String to a String
 String String::operator+(const String & st) const
 {
-//    char *tmpStr = new char[]
-    return  String(std::strcat(str, st.str));
+    return str+st;
 }
 
 // add a C string to a String
