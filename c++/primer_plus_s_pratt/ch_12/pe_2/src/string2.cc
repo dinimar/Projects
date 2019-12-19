@@ -50,6 +50,16 @@ String::~String()
 }
 
 // functions
+int String::has(const char &c) {
+    int k = 0; // counter of chars equal to c
+    // Iterate over all chars
+    for(int i=0; i<len; i++) {
+        if (*(str+i) == c) k++;
+    }
+
+    return k;
+}
+
 void String::stringUp() {
     for(int i=0; i<len; i++) {
         *(str+i) = toupper(*(str+i));
