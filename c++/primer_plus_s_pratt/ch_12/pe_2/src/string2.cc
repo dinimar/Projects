@@ -80,9 +80,10 @@ String String::operator+(const String & st) const
 }
 
 // add a C string to a String
-//String String::operator+(const char* s) const
-//{
-//}
+String String::operator+(const char* s) const
+{
+    return str+String(s);
+}
 
 // overloaded operator methods
 // assign a String to a String
