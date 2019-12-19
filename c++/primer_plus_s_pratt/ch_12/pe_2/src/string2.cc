@@ -60,6 +60,12 @@ int String::has(const char &c) {
     return k;
 }
 
+void String::stringLow() {
+    for(int i=0; i<len; i++) {
+        *(str+i) = tolower(*(str+i));
+    }
+}
+
 void String::stringUp() {
     for(int i=0; i<len; i++) {
         *(str+i) = toupper(*(str+i));

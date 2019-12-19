@@ -23,31 +23,32 @@ int main() {
     // converts string to uppercase
     cout << "The string\n" << s2 << "\ncontains " << s2.has('A')
     << " 'A' characters in it.\n";
-//    s1 = "red";
-//    // String(const char *),
-//    // then String & operator=(const String&)
-//    String rgb[3] = { String(s1), String("green"), String("blue")};
-//    cout << "Enter the name of a primary color for mixing light: ";
-//    String ans;
-//    bool success = false;
-//    while (cin >> ans)
-//    {
-//        ans.stringlow();
-//        // converts string to lowercase
-//        for (int i = 0; i < 3; i++)
-//        {
-//            if (ans == rgb[i]) // overloaded == operator
-//            {
-//                cout << "That's right!\n";
-//                success = true;
-//                break;
-//            }
-//        }
-//        if (success)
-//            break;
-//        else
-//            cout << "Try again!\n";
-//    }
-//    cout << "Bye\n";
+    s1 = "red";
+    // String(const char *),
+    // then String & operator=(const String&)
+    String rgb[3] = { String(s1), String("green"), String("blue")};
+    cout << "Enter the name of a primary color for mixing light: ";
+    String ans;
+    bool success = false;
+    while (cin >> ans)
+    {
+        ans.stringLow();
+        // converts string to lowercase
+        for (int i = 0; i < 3; i++)
+        {
+            if (ans == rgb[i]) // overloaded == operator
+            {
+                cout << "That's right!\n";
+                success = true;
+                break;
+            }
+        }
+        if (success)
+            break;
+        else
+            cout << "Try again!\n";
+    }
+    cout << "Bye\n";
+
     return 0;
 }

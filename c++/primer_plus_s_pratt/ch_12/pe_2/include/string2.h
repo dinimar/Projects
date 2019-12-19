@@ -30,6 +30,7 @@ public:
 // destructor
     int length () const { return len; }
     int has(const char &);
+    void stringLow();
     void stringUp();
 // overloaded operator methods
     String & operator=(const String &);
