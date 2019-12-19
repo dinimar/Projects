@@ -4,6 +4,7 @@
 //
 
 #include <cstring> // string.h for some
+#include <cctype>
 #include "string2.h" // includes <iostream>
 
 using std::cin;
@@ -15,6 +16,7 @@ int String::HowMany()
 {
     return num_strings;
 }
+
 // class methods
 String::String(const char * s)
 {
@@ -45,6 +47,13 @@ String::~String()
 {
     --num_strings;
     delete [] str;
+}
+
+// functions
+void String::stringUp() {
+    for(int i=0; i<len; i++) {
+        *(str+i) = toupper(*(str+i));
+    }
 }
 
 // overloaded operator methods

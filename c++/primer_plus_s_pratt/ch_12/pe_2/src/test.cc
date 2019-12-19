@@ -19,8 +19,8 @@ int main() {
     // overloaded =, + operators
     cout << s2 << ".\n";
     s2 = s2 + s1;
-//    s2.stringup();
-//    // converts string to uppercase
+    s2.stringUp();
+    // converts string to uppercase
 //    cout << "The string\n" << s2 << "\ncontains " << s2.has('A')
 //    << " 'A' characters in it.\n";
 //    s1 = "red";
