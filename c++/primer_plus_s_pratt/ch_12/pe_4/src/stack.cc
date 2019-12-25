@@ -42,3 +42,14 @@ bool Stack::isempty() const {
 bool Stack::isfull() const {
     return top == size-1 ? true : false;
 }
+
+bool Stack::push(const Item &item) {
+    if (top != -1) {
+        // shift array for 1 element to the right
+        for (int i = top + 1; i > 0; i--) {
+            pitems[i] = pitems[i - 1];
+        }
+    }
+    pitems[0] = item; // add value in the beginning
+    top++; // update top idx
+}
