@@ -7,9 +7,9 @@
 #include <algorithm>
 
 Stack::Stack(int n) {
-    int size = n;
+    size = n;
     pitems = new Item[size];
-    top = 0;
+    top = -1;
 }
 
 Stack::Stack(const Stack &st) {
@@ -33,4 +33,12 @@ Stack & Stack::operator=(const Stack &st) {
 
 Stack::~Stack() {
     delete [] pitems;
+}
+
+bool Stack::isempty() const {
+    return top == -1 ? true : false;
+}
+
+bool Stack::isfull() const {
+    return top == size-1 ? true : false;
 }

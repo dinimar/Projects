@@ -20,8 +20,9 @@ public:
     Stack(const Stack & st); // copy operator
     Stack & operator=(const Stack & st); // assignment operator
     ~Stack();
-//    bool isempty() const;
-//    bool isfull() const; // push() returns false if stack already is full, true otherwise
+    bool isempty() const;
+    bool isfull() const;
+    // push() returns false if stack already is full, true otherwise
 //    bool push(const Item & item); // add item to stack
 //    // pop() returns false if stack already is empty, true otherwise
 //    bool pop(Item & item); // pop top into item

@@ -13,5 +13,8 @@ int main(int argc, char **argv) {
     st = st;
     st = cp;
 
+    bool em = st.isempty();
+    bool full = st.isfull();
+
     return 0;
 }
