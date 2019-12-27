@@ -4,7 +4,10 @@
 //
 
 
-#include <stack.h>
+#include <iostream>
+#include "stack.h"
+
+using namespace std;
 
 int main(int argc, char **argv) {
     int size = 11;
@@ -15,12 +18,13 @@ int main(int argc, char **argv) {
     st = st;
     st = cp;
 
+    if (st.isempty()) cout << "Stack is empty" << endl;
+    // Test push function
     for (int i = 0; i < size; ++i) {
-        st.push(Item(10-i));
+        if (st.push(Item(10-i))) cout << "Item("<<i<<")'s successfully added" << endl;
     }
+    if (st.isfull()) cout << "Stack is full" << endl;
 
-    bool em = st.isempty();
-    bool full = st.isfull();
 
     return 0;
 }
