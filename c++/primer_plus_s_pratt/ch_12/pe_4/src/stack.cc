@@ -4,7 +4,6 @@
 //
 
 #include "stack.h"
-#include <algorithm>
 
 Stack::Stack(int n) {
     size = n;
@@ -15,7 +14,10 @@ Stack::Stack(int n) {
 Stack::Stack(const Stack &st) {
     size = st.size;
     pitems = new Item[size];
-    std::copy(st.pitems, st.pitems+st.size, pitems);
+    for(int i=0; i<size; i++) {
+        pitems[i] = st.pitems[i];
+    }
+    //    std::copy(st.pitems, st.pitems+st.size, pitems);
     top = st.top;
 }
 
@@ -24,7 +26,10 @@ Stack & Stack::operator=(const Stack &st) {
         delete [] pitems;
         size = st.size;
         pitems = new Item[size];
-        pitems = std::copy(st.pitems, st.pitems+st.size, pitems);
+        for(int i=0; i<size; i++) {
+           pitems[i] = st.pitems[i];
+        }
+//        pitems = std::copy(st.pitems, st.pitems+st.size, pitems);
         top = st.top;
     }
 
@@ -44,12 +49,18 @@ bool Stack::isfull() const {
 }
 
 bool Stack::push(const Item &item) {
-    if (top != -1) {
-        // shift array for 1 element to the right
-        for (int i = top + 1; i > 0; i--) {
-            pitems[i] = pitems[i - 1];
+    if (top+1 < size) {
+        if (top != -1) {
+            // shift array for 1 element to the right
+            for (int i = top + 1; i > 0; i--) {
+                pitems[i] = pitems[i - 1];
+            }
         }
+        pitems[0] = item; // add value in the beginning
+        top++; // update top idx
+
+        return true;
+    } else {
+        return false;
     }
-    pitems[0] = item; // add value in the beginning
-    top++; // update top idx
 }
