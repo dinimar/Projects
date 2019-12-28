@@ -21,10 +21,15 @@ int main(int argc, char **argv) {
     if (st.isempty()) cout << "Stack is empty" << endl;
     // Test push function
     for (int i = 0; i < size; ++i) {
-        if (st.push(Item(10-i))) cout << "Item("<<i<<")'s successfully added" << endl;
+        if (st.push(Item(size-i-1))) cout << "Item(" << size-i-1 << ")'s successfully added" << endl;
     }
-    if (st.isfull()) cout << "Stack is full" << endl;
-
+    if (st.isfull()) cout << "Stack is full" << endl << endl;
+    // Test pop function
+    Item item = -1;
+    for (int i = 0; i < size; ++i) {
+        if (st.pop(item) && (item == i)) cout << "Item(" << item << ")'s successfully popped" << endl;
+    }
+    if (st.isempty()) cout << "Stack is empty" << endl;
 
     return 0;
 }

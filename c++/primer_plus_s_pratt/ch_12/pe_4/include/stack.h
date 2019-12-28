@@ -16,7 +16,7 @@ private:
     int size; // number of elements in stack
     int top; // index for top stack item
 public:
-    Stack(int n = MAX); // creates stack with n elements
+    explicit Stack(int n = MAX); // creates stack with n elements
     Stack(const Stack & st); // copy operator
     Stack & operator=(const Stack & st); // assignment operator
     ~Stack();
@@ -24,8 +24,8 @@ public:
     bool isfull() const;
     // push() returns false if stack already is full, true otherwise
     bool push(const Item & item); // add item to stack
-//    // pop() returns false if stack already is empty, true otherwise
-//    bool pop(Item & item); // pop top into item
+    // pop() returns false if stack already is empty, true otherwise
+    bool pop(Item & item); // pop top into item
 };
 
 #endif //STRING_LIB_STACK_H
