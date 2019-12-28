@@ -41,23 +41,26 @@ Stack::~Stack() {
 }
 
 bool Stack::isempty() const {
-    return top == -1 ? true : false;
+    return top == -1;
 }
 
 bool Stack::isfull() const {
-    return top == size-1 ? true : false;
+    return top == size-1;
 }
 
 bool Stack::push(const Item &item) {
     if (top+1 < size) {
-        if (top != -1) {
-            // shift array for 1 element to the right
-            for (int i = top + 1; i > 0; i--) {
-                pitems[i] = pitems[i - 1];
-            }
-        }
-        pitems[0] = item; // add value in the beginning
-        top++; // update top idx
+        pitems[++top] = item; // add value on the top; increase top idx
+
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Stack::pop(Item & item) {
+    if (top-1 >= -1) {
+        item = pitems[top--]; // get top value; decrease top idx
 
         return true;
     } else {
