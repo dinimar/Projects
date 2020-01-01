@@ -1,0 +1,2 @@
+[x_path]
+sections: //div[contains(@class, 'prokrutka')]/div[contains(@class, 'divleft')]/a
