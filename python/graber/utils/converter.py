@@ -37,3 +37,16 @@ def html_2_md(page):
     par.f
 
     return res_file + par.__str__()
+
+
+def html_2_md_def(page, links):
+    res_file = gen_info(page[0], 'true')
+    # Extract paragraph
+    pr = Parser(page[1])
+    par = pr.soup.find('p')
+    res_file = res_file + par.string + '\r\n'
+    # Add links
+    for i in range(0, len(links)):
+        res_file = res_file+str(i)+'. ['+links[i][0]+']('+links[i][1]+')'+'\r\n'
+
+    return res_file

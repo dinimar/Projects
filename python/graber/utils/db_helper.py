@@ -18,6 +18,11 @@ def mkdir(path, name):
     return res_path, section_q
 
 
+def touch_default(path, page, links):
+    with open(path+"/default.md", 'w+') as f:
+        f.write(converter.html_2_md_def(page, links))
+
+
 def touch_docs(path, page):
     r_path, sub_sec = mkdir(path, page[0])
 

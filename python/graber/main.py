@@ -42,9 +42,12 @@ if __name__ == '__main__':
         s_pr = Parser(sec[1])
         s_links = pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
         # Step 3 - for each link create docs.md
+        def_links = []
         for link in s_links:
             res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
-
+            def_links.append((link[0], section_q+subsec_q))
+        # Step 4 - create default.md
+        db_helper.touch_default(root+p_dir+section_q, sec, def_links)
         break
 
 
