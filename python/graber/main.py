@@ -1,7 +1,7 @@
 import os
 import configparser
-from utils import graber
 from utils.parser import Parser
+from utils import converter
 
 # Config setup
 root = os.path.dirname(os.path.abspath(__file__))
@@ -22,7 +22,6 @@ arti_links = [] # article links
 
 if __name__ == '__main__':
     # Load main page, process sections
-    page_html = graber.download_page(host)
     pr = Parser(host)
     sections = list(pr.soup.find_all('a', {'class': 'nav_link'}))
     categories = list(map(lambda x: x.a, pr.soup.find_all('td', {'width': '12%'})))
@@ -30,6 +29,9 @@ if __name__ == '__main__':
     # Extract links
     sec_links = pr.extract_links(sections)
     arti_links = pr.extract_links(categories)
+
+    md = converter.html_2_md(sec_links[0])
+    print(md)
 
     # with open(os.path.join(root, ))
     # for sec in sec_links:
