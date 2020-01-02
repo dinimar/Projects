@@ -1,7 +1,7 @@
 import os
 import configparser
 from utils import graber
-from utils import parser
+from utils.parser import Parser
 
 # Config setup
 root = os.path.dirname(os.path.abspath(__file__))
@@ -16,35 +16,39 @@ config.read(os.path.join(root, config_file))
 
 # Site data
 host = "https://studopedia.ru"
-lect_links = [] # lection links
+sec_links = [] # lection links
 arti_links = [] # article links
-
-
-# def stringify_children(node):
-#     from lxml.etree import tostring
-#     from itertools import chain
-#     parts = ([node.text] +
-#             list(chain(*([c.text, tostring(c), c.tail] for c in node.getchildren()))) +
-#             [node.tail])
-#     # filter removes possible Nones in texts and tails
-#     return ''.join(filter(None, parts))
 
 
 if __name__ == '__main__':
     # Load main page, process sections
     page_html = graber.download_page(host)
-    tree = parser.create_tree(page_html)
-    sections = parser.extract_sections(tree, config['x_path']['sections'])
-    articles = parser.extract_sections(tree, config['x_path']['categories'])
+    pr = Parser(host)
+    sections = list(pr.soup.find_all('a', {'class': 'nav_link'}))
+    categories = list(map(lambda x: x.a, pr.soup.find_all('td', {'width': '12%'})))
+
+    # Extract links
+    sec_links = pr.extract_links(sections)
+    arti_links = pr.extract_links(categories)
+
+    # with open(os.path.join(root, ))
+    # for sec in sec_links:
+    # s_pr = sec_links[0]
+    # s_pr = Parser(sec[1])
+    # s_links = s_pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
+
+    # pass
 
     # Extract section links
-    f_h = lambda x : x.attrib.get('href')
+    # f_h = lambda x : x.attrib.get('href')
     # f_t = lambda x : x.text
-    for sec in sections:
-        lect_links.append(host+f_h(sec))
+    # lect_links = sections..text
+    # for sec in sections:
+    #     lect_links.append(host+f_h(sec))
+    #     stringify_children(sec)
     # Extract article links
-    for art in articles:
-        arti_links.append(host+f_h(art))
+    # for art in articles:
+    #     arti_links.append(host+f_h(art))
 
     # with open(os.path.join(root, art_db), 'w'):
         # Extract sublinks from article titles

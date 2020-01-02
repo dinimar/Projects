@@ -1,15 +1,20 @@
-from lxml import etree
+from bs4 import BeautifulSoup
+from utils import graber
 
 
-def create_tree(page):
-    # parser = etree.HTMLParser()
-    html_code = str(page, encoding="utf-8", errors="ignore")
-    tree = etree.HTML(html_code)
+class Parser:
+    def __init__(self, host):
+        self.host = host
+        self.soup = self.create_tree()
 
-    return tree
+    def create_tree(self):
+        soup = BeautifulSoup(graber.download_page(self.host), 'html.parser')
 
+        return soup
 
-def extract_sections(tree, query):
-    sections = tree.xpath(query)
+    def extract_links(self, list):
+        links = []
+        for el in list:
+            links.append((el.string, self.host+el.get('href')))
 
-    return sections
+        return links
