@@ -15,6 +15,9 @@ class Parser:
     def extract_links(self, list):
         links = []
         for el in list:
-            links.append((el.string, self.host+el.get('href')))
+            href = el.get('href')
+            if href[0] != '/':
+                href = '/'+href
+            links.append((el.string, self.host+href))
 
         return links

@@ -34,10 +34,19 @@ if __name__ == '__main__':
 
     # create dir for section
     k = 2
-    for i in range(0, len(sections)):
-        # print(i)
-        db_helper.mkdir(root+p_dir, '0'+str(k)+'.'+sections[i].string)
+    for sec in sec_links:
+        # Step 1 - create dirs
+        res_path, section_q = db_helper.mkdir(root+p_dir, '0'+str(k)+'.'+sec[0])
         k = k + 1
+        # Step 2 - extract links from section
+        s_pr = Parser(sec[1])
+        s_links = pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
+        # Step 3 - for each link create docs.md
+        for link in s_links:
+            res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
+
+        break
+
 
     # with open(os.path.join(root, ))
     # for sec in sec_links:
