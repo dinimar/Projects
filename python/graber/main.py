@@ -2,6 +2,7 @@ import os
 import configparser
 from utils.parser import Parser
 from utils import converter
+from utils import db_helper
 
 # Config setup
 root = os.path.dirname(os.path.abspath(__file__))
@@ -10,6 +11,7 @@ config = configparser.ConfigParser()
 config.read(os.path.join(root, config_file))
 
 # DB
+p_dir = '/pages' # dir for out pages
 # db_dir = '/link_db'
 # art_db = db_dir+'/articles.txt'
 # link_db = db_dir+'/links.txt'
@@ -30,8 +32,12 @@ if __name__ == '__main__':
     sec_links = pr.extract_links(sections)
     arti_links = pr.extract_links(categories)
 
-    md = converter.html_2_md(sec_links[0])
-    print(md)
+    # create dir for section
+    k = 2
+    for i in range(0, len(sections)):
+        # print(i)
+        db_helper.mkdir(root+p_dir, '0'+str(k)+'.'+sections[i].string)
+        k = k + 1
 
     # with open(os.path.join(root, ))
     # for sec in sec_links:

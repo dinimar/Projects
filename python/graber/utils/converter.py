@@ -12,11 +12,11 @@ def gen_info(title, visible):
 
 
 def html_2_md(page):
-    file_content = ""
+    res_file = gen_info(page[0], 'true')
+    # Extract paragraph
+    pr = Parser(page[1])
+    par = pr.soup.find('td', {'style':'border-width:1px; border:#B1DCF9'}).p
+    # Update res_file
+    res_file = res_file + par.string
 
-    # pr = Parser(page[1])
-    # doc = pr.soup.find('td', {'style': 'border-width:1px; border:#B1DCF9'})
-
-    file_content = gen_info(page[0], 'true')
-
-    return file_content
+    return res_file
