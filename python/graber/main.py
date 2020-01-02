@@ -45,9 +45,8 @@ if __name__ == '__main__':
         def_links = []
         for link in s_links:
             res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
-            def_links.append((link[0], section_q+subsec_q))
         # Step 4 - create default.md
-        db_helper.touch_default(root+p_dir+section_q, sec, def_links)
+        db_helper.touch_default(root+p_dir+section_q, sec, s_links)
         break
 
 

@@ -47,6 +47,6 @@ def html_2_md_def(page, links):
     res_file = res_file + par.string + '\r\n'
     # Add links
     for i in range(0, len(links)):
-        res_file = res_file+str(i)+'. '+links[i][0]+'\r\n'
+        res_file = res_file+str(i+1)+'. '+links[i][0]+'\r\n'
 
     return res_file
