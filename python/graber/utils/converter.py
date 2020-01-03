@@ -51,6 +51,29 @@ def html_2_md(page):
 
     return res_file + par.__str__()
 
+def html_2_md_cat(page):
+    res_file = gen_info(page[0], 'true')
+    # Extract paragraph
+    pr = Parser(page[1])
+    host = page[1][0:find_nth(page[1], "/", 3)+1]
+    fix_img(host, pr)
+    par = pr.soup.find(lambda tag:tag.name == "td" and
+                len(tag.attrs) == 3 and
+                tag["style"] == "border-width:1px; border:#B1DCF9" and
+                tag["width"] == "100%" and
+                tag["valign"] == "top")
+
+    [x.extract() for x in par.findAll('script')] # remove script tags
+    [x.extract() for x in par.findAll('noindex')]
+    [x.extract() for x in par.findAll('center')]
+    [x.extract() for x in par.findAll('p', {'class': 'viewinfo'})]
+    [x.extract() for x in par.findAll('p', {'class': 'red'})]
+    [x.extract() for x in par.findAll('div', {'class': 'ya-site-form'})]
+    [x.extract() for x in par.findAll('div', {'class': 'pagelink'})]
+    [x.extract() for x in par.findAllNext('table', {'width': '900'})]
+
+    return res_file + par.__str__()
+
 
 def html_2_md_def(page, links):
     res_file = gen_info(page[0], 'true')

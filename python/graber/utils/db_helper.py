@@ -32,3 +32,13 @@ def touch_docs(path, page):
 
     return r_path, sub_sec
 
+
+def touch_cat_docs(path, page):
+    r_path, sub_sec = mkdir(path, page[0])
+
+
+    with open(r_path+"/docs.md", 'w+') as f:
+        f.write(converter.html_2_md_cat(page))
+
+    return r_path, sub_sec
+
