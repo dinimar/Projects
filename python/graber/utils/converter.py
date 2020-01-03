@@ -35,12 +35,19 @@ def html_2_md(page):
                 len(tag.attrs) == 2 and
                 tag["width"] == "100%" and
                 tag["border"] == "0")
-                # 'table', {'width': '100%', 'border': '0'})
-    # if par.findAll('script') != None:
     [x.extract() for x in par.findAll('script')] # remove script tags
     [x.extract() for x in par.findAll('ins')]
-    # Fix image src
-    # par.f
+    # remove bottom table
+    # [x.extract for x in par.findAll(lambda tag: tag.name == "table" and
+    #          len(tag.attrs) == 5 and
+    #          tag["width"] == "900" and
+    #          tag["cellspacing"] == "0" and
+    #          tag["cellpadding"] == "0" and
+    #          tag["border"] == "0" and
+    #          tag["align"] == "center")]
+    [x.extract() for x in par.findAllNext('table', {'width': '900'})]
+    # for x in par.findAllNext('noindex'):
+    #     x.findAllNext('table').extract()
 
     return res_file + par.__str__()
 

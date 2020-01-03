@@ -41,7 +41,8 @@ k = Counter(2)
 def process_sections(sect_links, i):
     for sec in sect_links:
         # Step 1 - create dirs
-        res_path, section_q = db_helper.mkdir(root+p_dir, '0'+str(i)+'.'+sec[0])
+        res_path, section_q = db_helper.mkdir(root+p_dir, '0'+str(k.value)+'.'+sec[0])
+        k.increment()
         # global k
         # with lock:
         #     k = k+1
@@ -62,7 +63,7 @@ def process_sections(sect_links, i):
                 pass
         # Step 4 - create default.md
         db_helper.touch_default(root+p_dir+section_q, sec, s_links)
-        i = i+1
+        # i = i+1
 
 
 if __name__ == '__main__':
