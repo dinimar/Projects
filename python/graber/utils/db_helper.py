@@ -26,6 +26,7 @@ def touch_default(path, page, links):
 def touch_docs(path, page):
     r_path, sub_sec = mkdir(path, page[0])
 
+
     with open(r_path+"/docs.md", 'w+') as f:
         f.write(converter.html_2_md(page))
 

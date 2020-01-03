@@ -38,6 +38,7 @@ def html_2_md(page):
                 # 'table', {'width': '100%', 'border': '0'})
     # if par.findAll('script') != None:
     [x.extract() for x in par.findAll('script')] # remove script tags
+    [x.extract() for x in par.findAll('ins')]
     # Fix image src
     # par.f
 
@@ -50,11 +51,13 @@ def html_2_md_def(page, links):
     pr = Parser(page[1])
     par = pr.soup.find('p')
     try:
-        res_file = res_file + par.string + '\r\n'
+        res_file = res_file + par.text + '\r\n'
     except TypeError:
-        print(page[0])
+        print("Paragraph extraction problem: "+page[0])
     # Add links
     for i in range(0, len(links)):
-        res_file = res_file+str(i+1)+'. '+links[i][0]+'\r\n'
-
+        try:
+            res_file = res_file+str(i+1)+'. '+links[i][0]+'\r\n'
+        except TypeError:
+            pass
     return res_file

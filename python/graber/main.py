@@ -22,7 +22,21 @@ host = "https://studopedia.ru"
 sec_links = [] # lection links
 arti_links = [] # article links
 
-# def inc():
+class Counter(object):
+    def __init__(self, start = 0):
+        self.lock = threading.Lock()
+        self.value = start
+    def increment(self):
+        # logging.debug('Waiting for a lock')
+        self.lock.acquire()
+        try:
+            # logging.debug('Acquired a lock')
+            self.value = self.value + 1
+        finally:
+            # logging.debug('Released a lock')
+            self.lock.release()
+
+k = Counter(2)
 
 def process_sections(sect_links, i):
     for sec in sect_links:
@@ -33,14 +47,19 @@ def process_sections(sect_links, i):
         #     k = k+1
         # Step 2 - extract links from section
         s_pr = Parser(sec[1])
-        if len(s_pr.soup.find_all('li')) == 0:
-            print(section_q)
-        else:
-            s_links = pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
+        s_links = []
+        try:
+            s_links = pr.extract_links(list(map(lambda x: x.a, filter(
+                lambda x: x.a is not None, map(lambda x: x, s_pr.soup.find_all('li'))))))
+        except AttributeError:
+            print("S_links problem in: "+section_q)
         # Step 3 - for each link create docs.md
         def_links = []
         for link in s_links:
-            res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
+            try:
+                res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
+            except AttributeError:
+                pass
         # Step 4 - create default.md
         db_helper.touch_default(root+p_dir+section_q, sec, s_links)
         i = i+1
