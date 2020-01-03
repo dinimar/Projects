@@ -1,4 +1,5 @@
 import os
+import threading
 import configparser
 from utils.parser import Parser
 from utils import converter
@@ -21,6 +22,29 @@ host = "https://studopedia.ru"
 sec_links = [] # lection links
 arti_links = [] # article links
 
+# def inc():
+
+def process_sections(sect_links, i):
+    for sec in sect_links:
+        # Step 1 - create dirs
+        res_path, section_q = db_helper.mkdir(root+p_dir, '0'+str(i)+'.'+sec[0])
+        # global k
+        # with lock:
+        #     k = k+1
+        # Step 2 - extract links from section
+        s_pr = Parser(sec[1])
+        if len(s_pr.soup.find_all('li')) == 0:
+            print(section_q)
+        else:
+            s_links = pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
+        # Step 3 - for each link create docs.md
+        def_links = []
+        for link in s_links:
+            res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
+        # Step 4 - create default.md
+        db_helper.touch_default(root+p_dir+section_q, sec, s_links)
+        i = i+1
+
 
 if __name__ == '__main__':
     # Load main page, process sections
@@ -30,24 +54,38 @@ if __name__ == '__main__':
 
     # Extract links
     sec_links = pr.extract_links(sections)
-    arti_links = pr.extract_links(categories)
+    # arti_links = pr.extract_links(categories)
+    th_num = 20
+    slice = int(len(sec_links) / th_num)
+
+    # k = 2
+    for i in range(0, th_num):
+        if i == th_num-1:
+            r_bound = len(sec_links)
+        else:
+            r_bound = (i+1)*slice
+
+        x = threading.Thread(target=process_sections, args=(sec_links[i*slice: r_bound], i,))
+        x.start()
+        # k = k+1
+        # break
 
     # create dir for section
-    k = 2
-    for sec in sec_links:
-        # Step 1 - create dirs
-        res_path, section_q = db_helper.mkdir(root+p_dir, '0'+str(k)+'.'+sec[0])
-        k = k + 1
-        # Step 2 - extract links from section
-        s_pr = Parser(sec[1])
-        s_links = pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
-        # Step 3 - for each link create docs.md
-        def_links = []
-        for link in s_links:
-            res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
-        # Step 4 - create default.md
-        db_helper.touch_default(root+p_dir+section_q, sec, s_links)
-        break
+    # k = 2
+    # for sec in sec_links:
+    #     # Step 1 - create dirs
+    #     res_path, section_q = db_helper.mkdir(root+p_dir, '0'+str(k)+'.'+sec[0])
+    #     k = k + 1
+    #     # Step 2 - extract links from section
+    #     s_pr = Parser(sec[1])
+    #     s_links = pr.extract_links(list(map(lambda x: x.a, s_pr.soup.find_all('li'))))
+    #     # Step 3 - for each link create docs.md
+    #     def_links = []
+    #     for link in s_links:
+    #         res_subpath, subsec_q = db_helper.touch_docs(root+p_dir+section_q, link)
+    #     # Step 4 - create default.md
+    #     db_helper.touch_default(root+p_dir+section_q, sec, s_links)
+    #     break
 
 
     # with open(os.path.join(root, ))

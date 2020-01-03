@@ -31,10 +31,15 @@ def html_2_md(page):
     pr = Parser(page[1])
     host = page[1][0:find_nth(page[1], "/", 3)+1]
     fix_img(host, pr)
-    par = pr.soup.find('sape_index')
+    par = pr.soup.find(lambda tag:tag.name == "table" and
+                len(tag.attrs) == 2 and
+                tag["width"] == "100%" and
+                tag["border"] == "0")
+                # 'table', {'width': '100%', 'border': '0'})
+    # if par.findAll('script') != None:
     [x.extract() for x in par.findAll('script')] # remove script tags
     # Fix image src
-    par.f
+    # par.f
 
     return res_file + par.__str__()
 
@@ -44,7 +49,10 @@ def html_2_md_def(page, links):
     # Extract paragraph
     pr = Parser(page[1])
     par = pr.soup.find('p')
-    res_file = res_file + par.string + '\r\n'
+    try:
+        res_file = res_file + par.string + '\r\n'
+    except TypeError:
+        print(page[0])
     # Add links
     for i in range(0, len(links)):
         res_file = res_file+str(i+1)+'. '+links[i][0]+'\r\n'
