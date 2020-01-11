@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # for each category add file table.txt
     for dir_path in dir_list:
-        sec_name = get_sec_name(basename(normpath(dir_path))) # name in english
+        sec_name = get_sec_name(basename(normpath(dir_path)))[0:50] # name in english
         
         # Get title from default.md
         with open(os.path.join(dir_path, 'blog.md'), 'r') as blog_file:
@@ -44,10 +44,10 @@ if __name__ == '__main__':
 
         # Create table.txt with table name
         with open(os.path.join(dir_path, 'table.txt'), 'w+') as f:
-            f.write(sec_name)
+            f.write('bolt_'+sec_name)
         
     # Add configurations to config.yml
     with open(os.path.join(pages_path, 'config.yml'), 'w+') as f:
         for sec in secs:
-            f.write(db_config_str.format(sec[0][0:64], sec[1]))
+            f.write(db_config_str.format(sec[0], sec[1]))
             f.write('\n\n')
