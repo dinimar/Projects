@@ -49,6 +49,5 @@ if __name__ == '__main__':
     # Add configurations to config.yml
     with open(os.path.join(pages_path, 'config.yml'), 'w+') as f:
         for sec in secs:
-            f.write(db_config_str.format(sec[0], sec[1]))
+            f.write(db_config_str.format(sec[0][0:64], sec[1]))
             f.write('\n\n')
-
