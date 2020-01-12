@@ -1,5 +1,6 @@
 from urllib3 import connection_from_url
-import wget
+import urllib.request
+import os
 
 
 def download_page(url):
@@ -9,4 +10,7 @@ def download_page(url):
     return page_html.data
 
 def save_pic(url, s_path):
-    wget.download(url, s_path)
+    urllib.request.urlretrieve(url, s_path)
+    # wait until file completely downloaded
+    while not os.path.exists(s_path):
+        time.sleep(1)
