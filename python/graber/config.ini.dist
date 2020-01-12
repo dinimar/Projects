@@ -1,4 +1,5 @@
-[x_path]
-sections: //div[contains(@class, 'prokrutka')]/div[contains(@class, 'divleft')]/a
-s_links: //ol/li/a
-categories: //table[contains(@cellspacing, 5) and contains(@cellpadding, 5)]//td/a
+[bolt_db]
+user: user
+password: password
+host: host
+database: database

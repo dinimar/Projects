@@ -15,6 +15,7 @@ def get_all_paths_by_level(dir, level):
 
 
 def extract_title(str):
+    pattern = "'.*'"
     return re.findall(pattern, str)[0][1:-1]
 
 
