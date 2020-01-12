@@ -2,9 +2,11 @@ import os
 import configparser
 import mysql.connector
 
+from datetime import date, datetime, timedelta
 from fixer import get_all_paths_by_level
 from fixer import extract_title
 from os.path import normpath, basename
+from slugify import slugify
 
 # db connection config
 root = os.path.dirname(os.path.abspath(__file__))
@@ -62,14 +64,47 @@ def get_sec_name(s_path):
 #             f.write('\n\n')
 
 
+add_article = ("INSERT INTO bolt_bezopasnostjiznedeatelnosti "
+              "(slug, datecreated, datechanged, ownerid, status, templatefields, title, text) " 
+              "VALUES (%(slug)s, %(datecreated)s, %(datechanged)s, %(ownerid)s, %(status)s, %(templatefields)s, %(title)s, %(text)s)")
+
+today = datetime.now().date()
+# insert_tmp = """INSERT INTO `bolt_bezopasnostjiznedeatelnosti` 
+# (`slug`, `datecreated`, `datechanged`, `ownerid`, `status`, `templatefields`, `title`, `text`) 
+# VALUES ('{0}', CURRENT_DATE(), CURRENT_DATE(), '1', 'published', '[]', '{1}', '{2}');"""
+
+
+def gen_article(title, text):
+    data_article = {
+        'slug': slugify(title),
+        'datecreated': today,
+        'datechanged': today,
+        'ownerid': 1,
+        'status': 'published',
+        'templatefields': '[]',
+        'title': title,
+        'text': text,
+    }
+
+    return data_article
 
 if __name__ == "__main__":
-    # dir_list = get_all_paths_by_level(pages_path, 1)
+    dir_list = get_all_paths_by_level(pages_path, 1)
+    
     
     # Connect to bolt_db
     cnx = mysql.connector.connect(user=config['bolt_db']['user'], password=config['bolt_db']['password'],
                               host=config['bolt_db']['host'],
                               database=config['bolt_db']['database'])
+    cursor = cnx.cursor()
+
+    # Insert new article
+    data_article = gen_article('Ещё Какой-то заголовок', 'Ещё какой-то текст')
+    cursor.execute(add_article, data_article)
+    # Make sure data is committed to the database
+    cnx.commit()
+
+    cursor.close()
     cnx.close()
 
     pass
