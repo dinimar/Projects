@@ -64,11 +64,11 @@ def get_sec_name(s_path):
 #             f.write('\n\n')
 
 
-add_article = ("INSERT INTO bolt_bezopasnostjiznedeatelnosti "
+add_article = ("INSERT INTO {table} "
               "(slug, datecreated, datechanged, ownerid, status, templatefields, title, text) " 
               "VALUES (%(slug)s, %(datecreated)s, %(datechanged)s, %(ownerid)s, %(status)s, %(templatefields)s, %(title)s, %(text)s)")
-
 today = datetime.now().date()
+
 # insert_tmp = """INSERT INTO `bolt_bezopasnostjiznedeatelnosti` 
 # (`slug`, `datecreated`, `datechanged`, `ownerid`, `status`, `templatefields`, `title`, `text`) 
 # VALUES ('{0}', CURRENT_DATE(), CURRENT_DATE(), '1', 'published', '[]', '{1}', '{2}');"""
@@ -90,7 +90,8 @@ def gen_article(title, text):
 
 if __name__ == "__main__":
     dir_list = get_all_paths_by_level(pages_path, 1)
-    
+    # doc_list = get_aldir_list[0]
+    table_ex = 'bolt_arhitektura' 
     
     # Connect to bolt_db
     cnx = mysql.connector.connect(user=config['bolt_db']['user'], password=config['bolt_db']['password'],
@@ -98,12 +99,16 @@ if __name__ == "__main__":
                               database=config['bolt_db']['database'])
     cursor = cnx.cursor()
 
+    title = 'Ещё и ещё Какой-то заголовок'
+    text = 'Ещё и ещё какой-то текст'
+
     # Insert new article
-    data_article = gen_article('Ещё Какой-то заголовок', 'Ещё какой-то текст')
-    cursor.execute(add_article, data_article)
+    data_article = gen_article(title, text)
+    cursor.execute(add_article.format(table=table_ex), data_article)
     # Make sure data is committed to the database
     cnx.commit()
 
+    # Close connection
     cursor.close()
     cnx.close()
 
