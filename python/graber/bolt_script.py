@@ -9,6 +9,7 @@ from os.path import normpath, basename
 from slugify import slugify
 from bs4 import BeautifulSoup
 from utils import graber
+from urllib import error
 import uuid
 
 # db connection config
@@ -17,9 +18,10 @@ config_file = "config.ini"
 config = configparser.ConfigParser()
 config.read(os.path.join(root, config_file))
 
-pages_path = '/home/dinir/Documents/git/graber_out/clean_pages/pages'
+pages_path = '/pages/final'
 pic_subdir = 'files/2020-01/'
-pic_path = os.path.join(root, pic_subdir)
+public_dir = '/var/www/vashotvet.com/bolt/public'
+pic_path = os.path.join(public_dir, pic_subdir)
 
 # {0} - must be in english cause it's name of a table
 # {1} - must be in russian cause it's name of section in views
@@ -79,29 +81,34 @@ def fix_img(title, text):
     # Convert text to soup
     soup = BeautifulSoup(text, 'html.parser')
     slug = slugify(title)
-    os.mkdir(os.path.join(pic_path, slug))
-    # For each image tag
-    for img in soup.find_all('img'):
-        try:
-            # a) donwnload picture to specified directory
-            url = img['src']
-            filename = url.rsplit('/', 1)[-1]
-            ext = filename.rsplit('.', 1)[-1]
-            uuid_fname = str(uuid.uuid4())+'.'+ext
-            f_path = os.path.join(pic_path, slug, uuid_fname)
-            graber.save_pic(url, f_path)
-            # b) update link
-            img['src'] = '/'+os.path.join(pic_subdir, slug, filename)
-        except FileExistsError:
-            print("Image ", url, " already dowloaded or name collision")
-            continue
-        except FileNotFoundError:
-            print("Image from ", url, " wasn't downloaded.")
-        except KeyError:
-            print("Empty image skipped")
-            continue
+    # Check image appearance
+    imgs = soup.find_all('img')
+    if len(imgs) != 0: 
+        os.mkdir(os.path.join(pic_path, slug))
+        # For each image tag
+        for img in imgs:
+            try:
+                # a) donwnload picture to specified directory
+                url = img['src']
+                filename = url.rsplit('/', 1)[-1]
+                ext = filename.rsplit('.', 1)[-1]
+                uuid_fname = str(uuid.uuid4())+'.'+ext
+                f_path = os.path.join(pic_path, slug, uuid_fname)
+                graber.save_pic(url, f_path)
+                # b) update link
+                img['src'] = '/'+os.path.join(pic_subdir, slug, uuid_fname)
+            except FileExistsError:
+                print("Image ", url, " already dowloaded or name collision")
+                continue
+            except FileNotFoundError:
+                print("Image from ", url, " wasn't downloaded.")
+            except KeyError:
+                print("Empty image skipped")
+                continue
+            except error.HTTPError as e:
+                print('\n', url, e.code)
 
-    return str(soup)
+        return str(soup)
 
 
 # extract title and text
@@ -126,8 +133,11 @@ def extract_tt(d_path):
 
 
 def gen_article(title, text):
+    slug = slugify(title)
+    if len(slug) > 128:
+       	slug = slug[0:128]
     data_article = {
-        'slug': slugify(title),
+        'slug': slug,
         'datecreated': today,
         'datechanged': today,
         'ownerid': 1,
@@ -150,19 +160,18 @@ if __name__ == "__main__":
     cursor = cnx.cursor()
 
     for dir_path in dir_list:
-        # extract table name
-        with open(os.path.join(dir_path, 'table.txt'), 'r') as f:
-            table_ex = f.readline() 
-        doc_list = get_all_paths_by_level(dir_path, 1)
-        for doc_path in doc_list:
-            title, text = extract_tt(os.path.join(doc_path, 'docs.md'))
-            # Insert new article
-            data_article = gen_article(title, text)
-            cursor.execute(add_article.format(table=table_ex), data_article)
-            # break
-        print(table_ex)
-        break
-
+        if 'algebra' in dir_path:
+            # extract table name
+            with open(os.path.join(dir_path, 'table.txt'), 'r') as f:
+                table_ex = f.readline() 
+            doc_list = get_all_paths_by_level(dir_path, 1)
+            for doc_path in doc_list:
+                title, text = extract_tt(os.path.join(doc_path, 'docs.md'))
+                # Insert new article
+                data_article = gen_article(title, text)
+                cursor.execute(add_article.format(table=table_ex), data_article)
+                # break
+            break
     # Make sure data is committed to the database
     cnx.commit()
 
