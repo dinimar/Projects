@@ -1,6 +1,7 @@
 import os
 import configparser
 import mysql.connector
+import mysql.connector.errors
 
 from datetime import date, datetime, timedelta
 from fixer import get_all_paths_by_level
@@ -11,6 +12,7 @@ from bs4 import BeautifulSoup
 from utils import graber
 from urllib import error
 import uuid
+from datetime import datetime
 
 # db connection config
 root = os.path.dirname(os.path.abspath(__file__))
@@ -76,15 +78,27 @@ add_article = ("INSERT INTO {table} "
               "VALUES (%(slug)s, %(datecreated)s, %(datechanged)s, %(ownerid)s, %(status)s, %(templatefields)s, %(title)s, %(text)s)")
 today = datetime.now().date()
 
+bug_f_p = os.path.join(root, 'log/imgs_500.txt') #  imgs with status 500
+if os.path.exists(bug_f_p):
+    bug_f = open(bug_f_p, 'w') 
+else:
+    bug_f = open(bug_f_p, 'w+')
+bug_f.write("{")
+
+proc_f_p = os.path.join(root, 'log/proc_dirs.txt') # proc_dirs.txt filepath
+if os.path.exists(proc_f_p):
+    proc_f = open(proc_f_p, 'w') # processed dirs
+else:
+    proc_f = open(proc_f_p, 'w+') # processed dirs
+
+
 # remove links on studopedia, download image, update links
 def fix_img(title, text):
     # Convert text to soup
     soup = BeautifulSoup(text, 'html.parser')
-    slug = slugify(title)
     # Check image appearance
     imgs = soup.find_all('img')
     if len(imgs) != 0: 
-        os.mkdir(os.path.join(pic_path, slug))
         # For each image tag
         for img in imgs:
             try:
@@ -93,20 +107,23 @@ def fix_img(title, text):
                 filename = url.rsplit('/', 1)[-1]
                 ext = filename.rsplit('.', 1)[-1]
                 uuid_fname = str(uuid.uuid4())+'.'+ext
-                f_path = os.path.join(pic_path, slug, uuid_fname)
+                f_path = os.path.join(pic_path, uuid_fname)
                 graber.save_pic(url, f_path)
                 # b) update link
-                img['src'] = '/'+os.path.join(pic_subdir, slug, uuid_fname)
+                img['src'] = '/'+os.path.join(pic_subdir, uuid_fname)
             except FileExistsError:
-                print("Image ", url, " already dowloaded or name collision")
                 continue
             except FileNotFoundError:
-                print("Image from ", url, " wasn't downloaded.")
+                bug_f.write("'"+url+"': '"+f_path+"',\n\n")
             except KeyError:
-                print("Empty image skipped")
                 continue
             except error.HTTPError as e:
-                print('\n', url, e.code)
+                if e.code == 500:
+                    bug_f.write("'"+url+"': '"+f_path+"',\n\n")
+                else:
+                    print('\n', url, e.code)
+            except http.client.InvalidUrl:
+                bug_f.write("'"+url+"': '"+f_path+"',\n\n")
 
         return str(soup)
 
@@ -152,6 +169,7 @@ def gen_article(title, text):
 if __name__ == "__main__":
     dir_list = get_all_paths_by_level(pages_path, 1)
     table_ex = '' # extracted table name
+    k = 0 # number of processed tables
 
     # Connect to bolt_db
     cnx = mysql.connector.connect(user=config['bolt_db']['user'], password=config['bolt_db']['password'],
@@ -160,22 +178,54 @@ if __name__ == "__main__":
     cursor = cnx.cursor()
 
     for dir_path in dir_list:
-        if 'algebra' in dir_path:
-            # extract table name
-            with open(os.path.join(dir_path, 'table.txt'), 'r') as f:
-                table_ex = f.readline() 
-            doc_list = get_all_paths_by_level(dir_path, 1)
-            for doc_path in doc_list:
+        # extract table name
+        with open(os.path.join(dir_path, 'table.txt'), 'r') as f:
+            table_ex = f.readline() 
+        doc_list = get_all_paths_by_level(dir_path, 1)
+        for doc_path in doc_list:
+            try:
                 title, text = extract_tt(os.path.join(doc_path, 'docs.md'))
                 # Insert new article
                 data_article = gen_article(title, text)
                 cursor.execute(add_article.format(table=table_ex), data_article)
-                # break
-            break
-    # Make sure data is committed to the database
-    cnx.commit()
+            except FileNotFoundError:
+                continue
+                # print('No docs.md file for ', doc_path)
+                # print(datetime.now())
+            except error.URLError as e:
+                continue
+                # bug_f.write('table: '+table_ex)
+                # bug_f.write('path: '+dir_path)
+                # bug_f.write('---')
+                # print('ex: ', e)
+                # print('table: ', table_ex)
+                # print('path: ', doc_path)
+                # print(datetime.now())
+                # print('---')
+            except ValueError as e:
+                continue
+                # print('ex: ', e)
+                # print('table: ', table_ex)
+                # print('path: ', doc_path)
+                # print(datetime.now())
+                # print('---')
+            except mysql.connector.errors.DatabaseError as e:
+                # print('data: ', data_article)
+                # print(datetime.now())
+                continue
+            
+        # break
+        k = k+1
+        proc_f.write(str(k)+', '+table_ex+', '+dir_path+', '+'\n\n')
+        # Make sure data is committed to the database
+        cnx.commit()
 
     # Close connection
     cursor.close()
     cnx.close()
+    bug_f.write("OK, ALL PAGES UPLOADED!")
+    # Close files
+    bug_f.write("}")
+    bug_f.close()
+    proc_f.close( )
 
