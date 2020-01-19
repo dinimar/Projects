@@ -80,6 +80,6 @@ def touch_comparison_file(path, links):
     with open(path+'/proc_links.txt', 'w+'):
         pass
 
-if __name__ == '__main__':
-    str = '!"№;%:?*()_)(*_  хорошая "№;%:музы%:?*ка%: かあふ>>'
-    print(fix_str(str))
+# if __name__ == '__main__':
+#     str = '!"№;%:?*()_)(*_  хорошая "№;%:музы%:?*ка%: かあふ>>'
+#     print(fix_str(str))
