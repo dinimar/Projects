@@ -9,6 +9,9 @@ private:
     int processtime_; // processing time for customer
 public:
     Customer();
+    // preemptive definitions to prevent public copying
+    Customer(const Customer & c);
+    Customer & operator=(const Customer & c);
     void set(long when);
     long when() const;
     int ptime() const;
