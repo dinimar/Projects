@@ -1,7 +1,6 @@
 // queue.h -- interface for a queue
 #ifndef QUEUE_H_
 #define QUEUE_H_
-// #include "node.h"
 #include "customer.h"
 
 template <typename T>
@@ -78,6 +77,8 @@ void Queue<T>::copy_nodes(const Queue &q)
         *curOrig->item_ = *curCopy->item_;
         // *curOrig->next_ = *nextTmp;
 
+        // enqueue(*(curCopy->item_));
+        // std::cout << curCopy->item_->when() << std::endl;
         // Update values
         curOrig = curOrig->next_;
         curCopy = nextTmp;
@@ -93,7 +94,7 @@ Queue<T>::~Queue()
 
 // Copy constructor
 template <typename T>
-Queue<T>::Queue(const Queue &q)
+Queue<T>::Queue(const Queue &q) : MAX_Q_SIZE_(q.MAX_Q_SIZE_)
 {
     copy_nodes(q);
 }
@@ -137,23 +138,23 @@ int Queue<T>::queuecount() const
 
 // Add item to queue
 template <typename T>
-bool Queue<T>::enqueue(const T &item)
+bool Queue<T>::enqueue(const T & item)
 {
     if (isfull()) {
         return false;
     } else {
         Node * add = new Node; // create node
+        add->next_ = nullptr;
         // initialize node by item
         add->item_ = new T();
         *(add->item_) = item;
 
         q_size_++;                  // increase number of nodes in queue
         if (front_ == nullptr) {    // if queue is empty,
-            front_ = new Node;      // init front node
-            *front_ = *add;         // place item at front
+            front_ = add;           // init front node
+            front_->next_ = rear_;  // set front_ pointing on rear_
         } else {
-            rear_->next_ = new Node;    // init next node
-            *rear_->next_ = *add;       // else place at rear
+            rear_->next_ = add;    // init next node
         }
         rear_ = add;                // have rear point to new node
         
@@ -163,19 +164,20 @@ bool Queue<T>::enqueue(const T &item)
 
 // Place front item into item variable and remove from queue
 template <typename T>
-bool Queue<T>::dequeue(T &item)
+bool Queue<T>::dequeue(T & item)
 {
     if (front_ == nullptr) {
         return false;
     } else {
-        T * item = front_->item_;    // set item to first item in queue
+        item = *(front_->item_);    // set item to first item in queue
         Node * temp = front_; // save location of first item
         front_ = front_->next_;  // reset front to next item
         delete temp;            // delete former first item
         q_size_--;              // decrease number of nodes in queue
-        
+
         if (q_size_ == 0)       // if there is no nodes
             rear_ = nullptr;     // set rear to nullptr
+        
         return true;
     }
 }
