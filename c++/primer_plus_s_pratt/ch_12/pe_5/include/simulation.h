@@ -9,7 +9,7 @@
 // class for running queue simulations
 class Simulation
 {
-private:
+protected:
     Queue<Customer> * line_; // a queue for simulation
     Customer * temp_;
 
@@ -40,14 +40,14 @@ public:
     Simulation &operator=(const Simulation &s);
     
     // perhour = average # of arrival per hour
-    // return average wait time
-    double estimateAvgWaitTime(double perhour); // run simulation
+    // returns average wait time
+    virtual double estimateAvgWaitTime(double perhour); // run simulation
 
     // x = average time, in minutes, between customers
-    // return value is true if customer shows up this minute
-    bool createCustomer(double x);
+    // returns value is true if customer shows up this minute
+    virtual bool createCustomer(double x);
 
-    ~Simulation();
+    virtual ~Simulation();
 };
 
 #endif
