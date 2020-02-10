@@ -62,27 +62,20 @@ void Queue<T>::copy_nodes(const Queue &q)
     // front_ = new Node<T>();
     // rear_ = new Node<T>();
 
-    Node * curOrig = front_;             // current node in original queue
-    Node * curCopy = q.front_;           // current node from passed queue
-    Node * nextTmp = q.front_->next_;    // next node
+    // Node * curOrig = front_;             // current node in original queue
+    // Node * curCopy = q.front_;
+    // Node * nextTmp = q.front_->next_;    // next node
 
     // Allocate memory for front node
-    curOrig = new Node;
+    // curOrig = new Node;
 
-    while (nextTmp != nullptr) {
-        // Allocate memory
-        curOrig->item_ = new T();
-        curOrig->next_ = new Node;
-        // Copy values
-        *curOrig->item_ = *curCopy->item_;
-        // *curOrig->next_ = *nextTmp;
+    Node * iterNode = q.front_;           // current node from passed queue
 
-        // enqueue(*(curCopy->item_));
-        // std::cout << curCopy->item_->when() << std::endl;
-        // Update values
-        curOrig = curOrig->next_;
-        curCopy = nextTmp;
-        nextTmp = nextTmp->next_;
+    while (iterNode != nullptr) {
+        // Add node
+        enqueue(*(iterNode->item_));
+        // Update value
+        iterNode = iterNode->next_;
     }
 }
 
@@ -105,13 +98,10 @@ Queue<T>& Queue<T>::operator=(const Queue<T> &q)
 {
     // Check whether self-assignment or not
     if (this != &q) {
-        remove_nodes();        
-        copy_nodes();
-
-        // *front_ = *q.front_;            // set a front node
-        // *rear_ = *q.rear_;              // set a rear node
-        q_size_ = q.q_size_;            // set a current number of nodes in queue
-        MAX_Q_SIZE_ = q.MAX_Q_SIZE_;    // set a queue capacity
+        // deallocate memory
+        remove_nodes();
+        // allocate memory for new nodes and copy passed object
+        copy_nodes(q);
     }
 
     return *this;
