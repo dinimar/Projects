@@ -10,29 +10,20 @@
 class Simulation
 {
 protected:
-    Queue<Customer> * line_; // a queue for simulation
-    Customer * temp_;
+    Queue<Customer> * line_;    // a queue for simulation
+    Customer * temp_;           // a temporary customer object for line_ modifying
 
-    enum { MIN_PER_HR = 60 };
+    enum { MIN_PER_HR = 60 }; // const value
 
-    int hours_ ; // hours of simulation
-    long cyclelimit_; // # of cycles
-    // double perhour_; 
+    int hours_ ;        // hours of simulation
+    long cyclelimit_;   // # of cycles
 public:
-    explicit Simulation(int qs = 10,
-                //  long turnaways, 
-                // long customers, long served, 
-                // long sum_line, int wait_time, 
-                // long line_wait, 
-                int hours = 100)
+    explicit Simulation(int qs = 10, int hours = 100)
             : hours_(hours), cyclelimit_(MIN_PER_HR * hours_)
-            // turnaways_(turnaways), customers_(customers), 
-            // served_(served), sum_line_(sum_line), 
-            // wait_time_(wait_time), line_wait_(line_wait) 
         {
             line_ = new Queue<Customer>(qs);
             temp_ = new Customer();
-            std::srand(std::time(0));
+            std::srand(std::time(0)); // init srand by current time
         };
 
     // preemptive definitions to prevent public copying
@@ -40,13 +31,15 @@ public:
     Simulation &operator=(const Simulation &s);
     
     // perhour = average # of arrival per hour
-    // returns average wait time
-    virtual double estimateAvgWaitTime(double perhour); // run simulation
+    // Runs simulation and returns average wait time
+    virtual double estimateAvgWaitTime(double perhour);
 
     // x = average time, in minutes, between customers
+    // Checks whether new customer has come or not
     // returns value is true if customer shows up this minute
     virtual bool createCustomer(double x);
 
+    // Destructor
     virtual ~Simulation();
 };
 

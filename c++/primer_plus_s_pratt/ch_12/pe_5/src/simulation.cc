@@ -35,7 +35,6 @@ Simulation & Simulation::operator=(const Simulation &s)
     return *this;
 };
 
-// 
 double Simulation::estimateAvgWaitTime(double perhour)
 {
     int wait_time = 0; // time until autoteller is free
@@ -71,13 +70,11 @@ double Simulation::estimateAvgWaitTime(double perhour)
     return (line_wait > 0 && served > 0) ? (double)line_wait / served : -1;
 }
 
-// Checks whether new customer has come or not
 bool Simulation::createCustomer(double x)
 {
     return (std::rand() * x / RAND_MAX < 1);
 }
 
-// Destructor
 Simulation::~Simulation()
 {
     delete line_;
