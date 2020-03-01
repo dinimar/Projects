@@ -2,9 +2,9 @@
 #include <boost/test/included/unit_test.hpp>
 #include "des.h"
 
-BOOST_AUTO_TEST_CASE( free_test_function )
-/* Compare with void free_test_function() */
+BOOST_AUTO_TEST_CASE( des_encrypt )
 {
-  DES des("123");
+  int8_t key[] = {1, 2, 3, 4, 5, 6, 7};
+  DES des(key);
   BOOST_TEST(true);
 }
