@@ -21,9 +21,10 @@ set(Boost_ADDITIONAL_VERSIONS "1.66" "1.66.0")
 find_package(Boost 1.66 REQUIRED COMPONENTS unit_test_framework)
 
 # creates the executable
-add_executable(test_executable src/test_des.cc)
+add_executable(test_executable test/test_des.cc src/des.cc)
 # indicates the include paths
 target_include_directories(test_executable PRIVATE ${Boost_INCLUDE_DIRS})
+target_include_directories(test_executable PUBLIC include)
 # indicates the shared library variant
 target_compile_definitions(test_executable PRIVATE "BOOST_TEST_DYN_LINK=1")
 # indicates the link paths
