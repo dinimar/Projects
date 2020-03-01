@@ -1,5 +1,8 @@
 *.py[cod]
 
+# Visual Studio Code
+.vscode 
+
 # C extensions
 *.so
 
