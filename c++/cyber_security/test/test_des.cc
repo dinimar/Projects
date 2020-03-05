@@ -4,7 +4,7 @@
 
 BOOST_AUTO_TEST_CASE( des_encrypt )
 {
-  int8_t key[] = {1, 2, 3, 4, 5, 6, 7};
+  std::vector<int8_t> key = {1, 2, 3, 4, 5, 6, 7};
   DES des(key);
   BOOST_TEST(true);
 }

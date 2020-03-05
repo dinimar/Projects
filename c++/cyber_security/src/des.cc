@@ -1,9 +1,15 @@
+#include <vector>
 #include "des.h"
 
-DES::DES(int8_t key[])
+DES::DES(std::vector<int8_t> key)
 {
-    // TODO: check size of passing array
-    // FIX: add bytes in reverse order
-    for (size_t n = 0; n < BYTES_NUM; n++)
-        key_[n] = key[n];
+    if (key.size() == BYTES_NUM)    // if passed key length is 7 bytes 
+    {
+        // using copy constructor 
+        // and assignment operator to inititalize
+        key_ = key;                                 // initialize by passed key
+    } else                          
+    {
+        key_ = std::vector<int8_t>(BYTES_NUM, 0);   // initialize by zeros
+    }
 }
