@@ -33,7 +33,18 @@ private:
          34, 2, 42, 10, 50, 18, 58, 26,
          33, 1, 41, 9, 49, 17, 57, 25}};
 
+    std::array<int, 48> r_block_table{
+        {32, 1, 2, 3, 4, 5,
+         4, 5, 6, 7, 8, 9,
+         8, 9, 10, 11, 12, 13,
+         12, 13, 14, 15, 16, 17,
+         16, 17, 18, 19, 20, 21,
+         20, 21, 22, 23, 24, 25,
+         24, 25, 26, 27, 28, 29,
+         28, 29, 30, 31, 32, 1}};
+
     int64_t get_nth_bit(int n, int64_t data);
+
 public:
     // Constructor
     // Initializes key for encryption/decryption
@@ -48,10 +59,11 @@ public:
     // permutation functions
     int64_t init_permutate(int64_t data);
     int64_t final_permutate(int64_t data);
-    
-    // Encrypt passed data with previously defined key
-    int64_t encrypt(int64_t data);
 
+    int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
+
+    // encrypts passed data with previously defined key
+    int64_t encrypt(int64_t data);
 };
 
 #endif

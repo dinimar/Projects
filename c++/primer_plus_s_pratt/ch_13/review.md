@@ -1,0 +1,2 @@
+# 1. What does a derived class inherit from a base class?
+All public member functions except **special member functions** that includes constructor, copy constructor/assignment operator, destructor. Therefore, a derived class doesn't inherit **non-member functions** as friend functions.

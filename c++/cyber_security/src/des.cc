@@ -29,6 +29,18 @@ int64_t DES::final_permutate(int64_t data)
     }
 }
 
+int64_t DES::e_func(int32_t data)
+{
+    int64_t perm_data = 0;  // zero-initialized permutated data
+    int k = 0;              // multiplier for bits
+
+    for (int & a: r_block_table)
+    {
+        perm_data += get_nth_bit(k, data) << a;
+        ++k;
+    }
+}
+
 int64_t DES::encrypt(int64_t data)
 {
     int64_t init_perm_data = init_permutate(data);    // perform initial permutation
@@ -36,6 +48,10 @@ int64_t DES::encrypt(int64_t data)
     // divide on blocks by 32 bits
     int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
     int32_t right_data = init_perm_data & right_mask;
+
+    // e_func
+    int64_t out_data_left = e_func(left_data);
+    int64_t out_data_right = e_func(right_data);
 
     int64_t final_perm_data = final_permutate(data);
     
