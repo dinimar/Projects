@@ -7,6 +7,9 @@ class DES
 {
 private:
     static const int BYTES_NUM = 7;
+    static const int64_t left_mask = 0x1111111100000000;
+    static const int64_t right_mask = 0x0000000011111111;
+
     int64_t key_; // key for encryption/decryption using only last 7 bytes
 
     // permuatation tables, 64 bits for each

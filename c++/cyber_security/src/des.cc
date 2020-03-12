@@ -32,6 +32,11 @@ int64_t DES::final_permutate(int64_t data)
 int64_t DES::encrypt(int64_t data)
 {
     int64_t init_perm_data = init_permutate(data);    // perform initial permutation
+
+    // divide on blocks by 32 bits
+    int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
+    int32_t right_data = init_perm_data & right_mask;
+
     int64_t final_perm_data = final_permutate(data);
     
     return final_perm_data;
