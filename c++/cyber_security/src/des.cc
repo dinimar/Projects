@@ -5,55 +5,55 @@ int64_t DES::get_nth_bit(int n, int64_t data)
     return (data >> n) & 1; // shift bits and mask
 }
 
-int64_t DES::init_permutate(int64_t data)
+int64_t DES::permutate(int64_t data, std::vector<int> table)
 {
     int64_t perm_data = 0;  // zero-initialized permutated data
     int k = 0;              // multiplier for bits
 
-    for (int & a: init_table)
+    for (int & a: table)
     {
         perm_data += get_nth_bit(k, data) << a; // bit shifting by 0, 1 till 63 bits
         ++k;
     }
 }
 
-int64_t DES::final_permutate(int64_t data)
-{
-    int64_t perm_data = 0;  // zero-initialized permutated data
-    int k = 0;              // multiplier for bits
+// int64_t DES::final_permutate(int64_t data)
+// {
+//     int64_t perm_data = 0;  // zero-initialized permutated data
+//     int k = 0;              // multiplier for bits
 
-    for (int & a: final_table)
-    {
-        perm_data += get_nth_bit(k, data) << a; // bit shifting by 0, 1 till 63 bits
-        ++k;
-    }
-}
+//     for (int & a: final_table)
+//     {
+//         perm_data += get_nth_bit(k, data) << a; // bit shifting by 0, 1 till 63 bits
+//         ++k;
+//     }
+// }
 
-int64_t DES::e_func(int32_t data)
-{
-    int64_t perm_data = 0;  // zero-initialized permutated data
-    int k = 0;              // multiplier for bits
+// int64_t DES::e_func(int32_t data)
+// {
+//     int64_t perm_data = 0;  // zero-initialized permutated data
+//     int k = 0;              // multiplier for bits
 
-    for (int & a: r_block_table)
-    {
-        perm_data += get_nth_bit(k, data) << a;
-        ++k;
-    }
-}
+//     for (int & a: r_block_table)
+//     {
+//         perm_data += get_nth_bit(k, data) << a;
+//         ++k;
+//     }
+// }
 
 int64_t DES::encrypt(int64_t data)
 {
-    int64_t init_perm_data = init_permutate(data);    // perform initial permutation
+    int64_t init_perm_data = permutate(data, init_table);    // perform initial permutation
 
     // divide on blocks by 32 bits
     int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
     int32_t right_data = init_perm_data & right_mask;
 
     // e_func
-    int64_t out_data_left = e_func(left_data);
-    int64_t out_data_right = e_func(right_data);
+    int64_t out_data_left = permutate(left_data, r_block_table);
+    int64_t out_data_right = permutate(right_data, r_block_table);
 
-    int64_t final_perm_data = final_permutate(data);
+    int64_t final_perm_data = permutate(data, final_table);
     
     return final_perm_data;
 };

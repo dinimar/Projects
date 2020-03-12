@@ -2,6 +2,7 @@
 #define DES_H_
 #include <string>
 #include <array>
+#include <vector>
 
 class DES
 {
@@ -13,7 +14,7 @@ private:
     int64_t key_; // key for encryption/decryption using only last 7 bytes
 
     // permuatation tables, 64 bits for each
-    std::array<int, 64> init_table{
+    std::vector<int> init_table =
         {58, 50, 42, 34, 26, 18, 10, 2,
          60, 52, 44, 36, 28, 20, 12, 4,
          62, 54, 46, 38, 30, 22, 14, 6,
@@ -21,9 +22,9 @@ private:
          57, 49, 41, 33, 25, 17, 9, 1,
          59, 51, 43, 35, 27, 19, 11, 3,
          61, 53, 45, 37, 29, 21, 13, 5,
-         63, 55, 47, 39, 31, 23, 15, 7}};
+         63, 55, 47, 39, 31, 23, 15, 7};
 
-    std::array<int, 64> final_table{
+    std::vector<int> final_table =
         {40, 8, 48, 16, 56, 24, 64, 32,
          39, 7, 47, 15, 55, 23, 63, 31,
          38, 6, 46, 14, 54, 22, 62, 30,
@@ -31,9 +32,9 @@ private:
          36, 4, 44, 12, 52, 20, 60, 28,
          35, 3, 43, 11, 51, 19, 59, 27,
          34, 2, 42, 10, 50, 18, 58, 26,
-         33, 1, 41, 9, 49, 17, 57, 25}};
+         33, 1, 41, 9, 49, 17, 57, 25};
 
-    std::array<int, 48> r_block_table{
+    std::vector<int> r_block_table =
         {32, 1, 2, 3, 4, 5,
          4, 5, 6, 7, 8, 9,
          8, 9, 10, 11, 12, 13,
@@ -41,7 +42,7 @@ private:
          16, 17, 18, 19, 20, 21,
          20, 21, 22, 23, 24, 25,
          24, 25, 26, 27, 28, 29,
-         28, 29, 30, 31, 32, 1}};
+         28, 29, 30, 31, 32, 1};
 
     int64_t get_nth_bit(int n, int64_t data);
 
@@ -57,8 +58,8 @@ public:
     virtual ~DES() = default;
 
     // permutation functions
-    int64_t init_permutate(int64_t data);
-    int64_t final_permutate(int64_t data);
+    int64_t permutate(int64_t data, std::vector<int> table);
+    // int64_t final_permutate(int64_t data);
 
     int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
 
