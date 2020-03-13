@@ -13,6 +13,7 @@ private:
 
     int64_t key_; // key for encryption/decryption using only last 7 bytes
 
+    // https://en.wikipedia.org/wiki/DES_supplementary_material
     // permuatation tables, 64 bits for each
     std::vector<int> init_table =
         {58, 50, 42, 34, 26, 18, 10, 2,
@@ -44,6 +45,22 @@ private:
          24, 25, 26, 27, 28, 29,
          28, 29, 30, 31, 32, 1};
 
+    std::array<std::array<std::array<int, 16>, 4>, 8>   // 8 S-boxes with 4x16 tables
+        s_box_table = {
+            // S_1
+            {
+                {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
+                {0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8},
+                {4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0},
+                {15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13},
+            },
+            // S_2
+            {
+                {15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10},
+                {3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5},
+                {0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15},
+                {13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9},
+            }};
     int64_t get_nth_bit(int n, int64_t data);
 
 public:

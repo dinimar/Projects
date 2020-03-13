@@ -50,7 +50,10 @@ int64_t DES::encrypt(int64_t data)
     int32_t right_data = init_perm_data & right_mask;
 
     // e_func
-    int64_t out_data_left = permutate(left_data, r_block_table);
+    int64_t out_data_left = permutate(left_data, r_block_table) // perform permutation 
+                            ^ key_                              // XOR with key
+                            << 16 >> 16;                         // remove first 16 bits that added after XOR
+                        
     int64_t out_data_right = permutate(right_data, r_block_table);
 
     int64_t final_perm_data = permutate(data, final_table);
