@@ -100,14 +100,15 @@ private:
                             {2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11},
                         }}}};
 
-    std::vector<std::vector<int>> p_key_table{
-        {57, 49, 41, 33, 25, 17, 9, 1},
-        {58, 50, 42, 34, 26, 18, 10, 2},
-        {59, 51, 43, 35, 27, 19, 11, 3},
-        {60, 52, 44, 36, 63, 55, 47, 39},
-        {31, 23, 15, 7, 62, 54, 46, 38},
-        {30, 22, 14, 6, 61, 53, 45, 37},
-        {29, 21, 13, 5, 28, 20, 12, 4}};
+    std::vector<int> p_key_table_
+    {
+        57, 49, 41, 33, 25, 17, 9, 1,
+        58, 50, 42, 34, 26, 18, 10, 2,
+        59, 51, 43, 35, 27, 19, 11, 3,
+        60, 52, 44, 36, 63, 55, 47, 39,
+        31, 23, 15, 7, 62, 54, 46, 38,
+        30, 22, 14, 6, 61, 53, 45, 37,
+        29, 21, 13, 5, 28, 20, 12, 4};
 
     int64_t get_nth_bit(int n, int64_t data);
 
@@ -122,9 +123,12 @@ public:
     DES &operator=(DES &&des) = default;
     virtual ~DES() = default;
 
+    // generates round key (without shifting)
+    // basing on passed key_
+    int64_t generate_round_key();
+
     // permutation functions
     int64_t permutate(int64_t data, std::vector<int> table);
-    // int64_t final_permutate(int64_t data);
 
     int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
 

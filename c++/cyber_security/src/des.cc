@@ -17,6 +17,20 @@ int64_t DES::permutate(int64_t data, std::vector<int> table)
     }
 }
 
+int64_t DES::generate_round_key()
+{
+    int64_t perm_data = 0;  // zero-initialized permutated data
+    int k = 0;              // multiplier for bits
+
+    for (int & a: p_key_table_)
+    {
+        perm_data += get_nth_bit(a, key_) << k; // bit shifting by 0, 1 till 63 bits
+        ++k;
+    }
+
+    return perm_data;
+}
+
 // int64_t DES::final_permutate(int64_t data)
 // {
 //     int64_t perm_data = 0;  // zero-initialized permutated data
@@ -49,8 +63,7 @@ int64_t DES::encrypt(int64_t data)
     int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
     int32_t right_data = init_perm_data & right_mask;
 
-    // generate round keys
-
+    int64_t round_key = permutate(key_, p_key_table_);      // initial round key (no bit shifting)
 
     // 15 rounds of encryption
     for(size_t i=0; i<15; ++i)
