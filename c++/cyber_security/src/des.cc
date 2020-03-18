@@ -5,6 +5,17 @@ int64_t DES::get_nth_bit(int n, int64_t data)
     return (data >> n) & 1; // shift bits and mask
 }
 
+int32_t DES::rotl32(int32_t n, unsigned int cycle, unsigned int shifts)
+{
+    for (size_t i = 0; i < shifts; i++)
+    {
+        n << 1;                     // shift to the left
+        n += get_nth_bit(n, 29);    // add shifted out bit to the begin
+    }
+
+    return n & rotation_key_mask;   // remove bits after 28th
+}
+
 int64_t DES::permutate(int64_t data, std::vector<int> table)
 {
     int64_t perm_data = 0;  // zero-initialized permutated data

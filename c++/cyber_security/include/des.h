@@ -110,7 +110,6 @@ private:
         30, 22, 14, 6, 61, 53, 45, 37,
         29, 21, 13, 5, 28, 20, 12, 4};
 
-    int64_t get_nth_bit(int n, int64_t data);
 
 public:
     // Constructor
@@ -122,6 +121,15 @@ public:
     DES &operator=(const DES &des) = default;
     DES &operator=(DES &&des) = default;
     virtual ~DES() = default;
+
+    static const int32_t rotation_key_mask = 0b00001111111111111111111111111111;    // 28-bit mask
+
+    static int64_t get_nth_bit(int n, int64_t data);    // returns nth bit of passed bit sequence
+
+    // rotates passed 32 bits cyclically to the left
+    // n - passed number, cycle - number of bits for cycle
+    // shifts - amount of shifts
+    static int32_t rotl32 (int32_t n, unsigned int cycle, unsigned int shifts);
 
     // generates round key (without shifting)
     // basing on passed key_
