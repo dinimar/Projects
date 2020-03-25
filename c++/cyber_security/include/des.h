@@ -125,6 +125,9 @@ public:
     // divides 56-bit key on 2 28-bit keys
     static std::map<std::string, int32_t> divide_perm_key(int64_t perm_key); 
 
+    // restores 56-bit from 28-bit left & right parts
+    static int64_t restore_key(std::map<std::string, int32_t> key_parts);
+
     // rotates passed 32 bits cyclically to the left
     // n - passed number, cycle - number of bits for cycle
     // shifts - amount of shifts

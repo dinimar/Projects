@@ -38,6 +38,17 @@ BOOST_AUTO_TEST_CASE( des_divide_key )
 
   BOOST_CHECK_BITWISE_EQUAL(key_parts["left"], key_parts["right"]);
 }
+
+BOOST_AUTO_TEST_CASE( des_restore_key )
+{
+  std::map<std::string, int32_t> key_parts;
+  key_parts["left"] = 0x0FFFFFFF;
+  key_parts["right"] = 0x0FFFFFFF;
+
+  int64_t rest_key = DES::restore_key(key_parts);
+
+  BOOST_CHECK_BITWISE_EQUAL(0x00FFFFFFFFFFFFFF, rest_key);
+}
 // BOOST_AUTO_TEST_CASE( des_encrypt )
 // {
 //   int64_t key = 0x0101010101010101;

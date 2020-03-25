@@ -96,6 +96,16 @@ std::map<std::string, int32_t> DES::divide_perm_key(int64_t perm_key)
     return key_parts;
 }
 
+int64_t DES::restore_key(std::map<std::string, int32_t> key_parts)
+{
+    int64_t key = key_parts["right"];
+    int64_t left_tmp = key_parts["left"];   // convert to int64_t to get zeros in left part
+
+    key += (left_tmp << 28);
+    
+    return key;
+}
+
 int64_t DES::encrypt(int64_t data)
 {
     int64_t init_perm_data = permutate(data, DES::ip_table); // perform initial permutation
@@ -111,16 +121,20 @@ int64_t DES::encrypt(int64_t data)
     {
         // Key generation
         int64_t perm_key = permutate(key_, DES::p_key_table_);  // PS-1 permutation
-
+        std::map<std::string, int32_t> key_parts = DES::divide_perm_key(perm_key);
 
         if ((i >= 1 & i <= 7) || (i >= 9 && i <= 14))
         {
-            // rotl32(left_key_part, 28, 2);
+            key_parts["left"] = rotl32(key_parts["left"], 28, 2);
+            key_parts["right"] = rotl32(key_parts["right"], 28, 2);
         }
         else
         {
-            // rotl32(left_key_part, 28, 1);    
+            key_parts["left"] = rotl32(key_parts["left"], 28, 1);
+            key_parts["right"] = rotl32(key_parts["right"], 28, 1);
         }
+
+        int64_t rest_key = DES::restore_key(key_parts);
     }
 
     // int64_t out_data_right = permutate(right_data, r_block_table);
