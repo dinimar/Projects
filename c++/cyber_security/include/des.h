@@ -13,18 +13,6 @@ private:
 
     int64_t key_; // key for encryption/decryption using only last 7 bytes
 
-    // https://en.wikipedia.org/wiki/DES_supplementary_material
-    // permuatation tables, 64 bits for each
-    std::vector<int> init_table =
-        {58, 50, 42, 34, 26, 18, 10, 2,
-         60, 52, 44, 36, 28, 20, 12, 4,
-         62, 54, 46, 38, 30, 22, 14, 6,
-         64, 56, 48, 40, 32, 24, 16, 8,
-         57, 49, 41, 33, 25, 17, 9, 1,
-         59, 51, 43, 35, 27, 19, 11, 3,
-         61, 53, 45, 37, 29, 21, 13, 5,
-         63, 55, 47, 39, 31, 23, 15, 7};
-
     std::vector<int> final_table =
         {40, 8, 48, 16, 56, 24, 64, 32,
          39, 7, 47, 15, 55, 23, 63, 31,
@@ -122,9 +110,13 @@ public:
     DES &operator=(DES &&des) = default;
     virtual ~DES() = default;
 
+    // https://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_(IP)
+    // initial permuatation table
+    static const std::vector<int> ip_table;
+
     static const int32_t rotation_key_mask = 0b00001111111111111111111111111111;    // 28-bit mask
 
-    static int64_t get_nth_bit(int n, int64_t data);    // returns nth bit of passed bit sequence
+    static int64_t get_nth_bit(int n, int64_t data);    // returns nth (by index) bit of passed bit sequence
 
     // rotates passed 32 bits cyclically to the left
     // n - passed number, cycle - number of bits for cycle
@@ -136,7 +128,7 @@ public:
     int64_t generate_round_key();
 
     // permutation functions
-    int64_t permutate(int64_t data, std::vector<int> table);
+    static int64_t permutate(int64_t data, std::vector<int> table);
 
     int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)  # CMake version check
+cmake_minimum_required(VERSION 3.5)  # CMake version check
 project(des_cypher_algorithm)               # Create project "simple_example"
 set(CMAKE_CXX_STANDARD 14)            # Enable c++14 standard
 enable_testing()
@@ -19,6 +19,9 @@ set(Boost_ADDITIONAL_VERSIONS "1.66" "1.66.0")
 
 # finds boost, triggers an error otherwise
 find_package(Boost 1.66 REQUIRED COMPONENTS unit_test_framework)
+
+# add_executable(exec src/main.cc src/des.cc)
+# target_include_directories(exec PUBLIC include)
 
 # creates the executable
 add_executable(test_executable test/test_des.cc src/des.cc)
