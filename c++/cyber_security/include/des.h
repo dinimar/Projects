@@ -1,5 +1,6 @@
 #ifndef DES_H_
 #define DES_H_
+#include <map>
 #include <string>
 #include <array>
 #include <vector>
@@ -10,6 +11,8 @@ private:
     static const int BYTES_NUM = 7;
     static const int64_t left_mask = 0x1111111100000000;
     static const int64_t right_mask = 0x0000000011111111;
+    static const int64_t key_left_mask_ = 0x1111111;             // 28 left bits
+    static const int64_t key_right_mask_ = 0x1111111110000000;   // 28 right bits
 
     int64_t key_; // key for encryption/decryption using only last 7 bytes
 
@@ -115,13 +118,17 @@ public:
     static const std::vector<int> ip_table;
 
     static const int32_t rotation_key_mask = 0b00001111111111111111111111111111;    // 28-bit mask
+    
+    // returns nth (by index) bit of passed bit sequence
+    static int64_t get_nth_bit(int n, int64_t data);
 
-    static int64_t get_nth_bit(int n, int64_t data);    // returns nth (by index) bit of passed bit sequence
+    // divides 56-bit key on 2 28-bit keys
+    static std::map<std::string, int32_t> divide_perm_key(int64_t perm_key); 
 
     // rotates passed 32 bits cyclically to the left
     // n - passed number, cycle - number of bits for cycle
     // shifts - amount of shifts
-    static int32_t rotl32 (int32_t n, unsigned int cycle, unsigned int shifts);
+    static int32_t rotl32(int32_t n, unsigned int cycle, unsigned int shifts);
 
     // generates round key (without shifting)
     // basing on passed key_
