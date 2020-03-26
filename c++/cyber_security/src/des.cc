@@ -159,6 +159,10 @@ int64_t DES::encrypt(int64_t data)
     // 15 rounds of encryption
     for (size_t i = 0; i < 15; ++i)
     {
+        // e function
+        data_parts["left"] = DES::permutate(data_parts["left"], DES::r_block_table);
+        data_parts["right"] = DES::permutate(data_parts["right"], DES::r_block_table);
+
         // Key generation
         std::map<std::string, uint64_t> key_parts = DES::divide(iter_key, DES::key_masks, 28);
 
