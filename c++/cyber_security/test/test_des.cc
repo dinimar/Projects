@@ -12,6 +12,22 @@ BOOST_AUTO_TEST_CASE ( des_nth_bit )
   BOOST_CHECK_EQUAL(1, DES::get_nth_bit(1, a));
 }
 
+BOOST_AUTO_TEST_CASE ( des_block4 )
+{
+  int64_t a = 0x7F;
+
+  BOOST_CHECK_EQUAL(0x3F, DES::extract_block6(0, a));
+  BOOST_CHECK_EQUAL(0x1, DES::extract_block6(1, a));
+}
+
+BOOST_AUTO_TEST_CASE ( des_s_box )
+{
+  int64_t a = 0x7F;
+
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(0, a));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1, DES::extract_block6(1, a));
+}
+
 BOOST_AUTO_TEST_CASE( des_permutation )
 {
   int64_t data = 0x123456ABCD132536;    // raw data
