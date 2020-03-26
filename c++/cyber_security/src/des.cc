@@ -159,7 +159,7 @@ int64_t DES::encrypt(int64_t data)
     // 15 rounds of encryption
     for (size_t i = 0; i < 15; ++i)
     {
-        // e function
+        // R block permutation
         data_parts["left"] = DES::permutate(data_parts["left"], DES::r_block_table);
         data_parts["right"] = DES::permutate(data_parts["right"], DES::r_block_table);
 
@@ -179,6 +179,10 @@ int64_t DES::encrypt(int64_t data)
 
         iter_key = DES::restore_key(key_parts);         // 56-bit restored from 28-bit parts
         int64_t round_key = permutate(iter_key, DES::pc_2_key_table);
+
+        // E function
+        data_parts["left"] ^= round_key;
+        data_parts["right"] ^= round_key;
     }
 
     // int64_t out_data_right = permutate(right_data, r_block_table);
