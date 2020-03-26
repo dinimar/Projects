@@ -34,14 +34,23 @@ BOOST_AUTO_TEST_CASE( des_divide_key )
 {
   int64_t key = 0x00FFFFFFFFFFFFFF;    // raw key
   
-  std::map<std::string, int32_t> key_parts = DES::divide_perm_key(key); 
+  std::map<std::string, uint32_t> key_parts = DES::divide(key, DES::key_masks, 28); 
 
   BOOST_CHECK_BITWISE_EQUAL(key_parts["left"], key_parts["right"]);
 }
 
+BOOST_AUTO_TEST_CASE( des_divide_data )
+{
+  int64_t key = 0xFFFFFFFFFFFFFFFF;    // raw data
+  
+  std::map<std::string, uint32_t> data_parts = DES::divide(key, DES::data_masks, 32);
+
+  BOOST_CHECK_BITWISE_EQUAL(data_parts["left"], data_parts["right"]);
+}
+
 BOOST_AUTO_TEST_CASE( des_restore_key )
 {
-  std::map<std::string, int32_t> key_parts;
+  std::map<std::string, uint32_t> key_parts;
   key_parts["left"] = 0x0FFFFFFF;
   key_parts["right"] = 0x0FFFFFFF;
 

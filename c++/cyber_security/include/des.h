@@ -13,12 +13,6 @@ private:
     static const int64_t right_mask = 0x0000000011111111;
 
     int64_t key_; // key for encryption/decryption using only last 7 bytes
-    static const int64_t key_left_mask_ = 0x1111111;             // 28 left bits
-    static const int64_t key_right_mask_ = 0x1111111110000000;   // 28 right bits
-    static const std::vector<int> pc_1_key_table_;
-    static const std::vector<int> pc_2_key_table_;
-
-    static const std::vector<int> ip_table_;
 
     std::vector<int> final_table =
         {40, 8, 48, 16, 56, 24, 64, 32,
@@ -111,16 +105,22 @@ public:
     // initial permuatation table
     static const std::vector<int> ip_table;
 
+    static const std::map<std::string, int64_t> key_masks;
+    static const std::map<std::string, int64_t> data_masks;
+    static const std::vector<int> pc_1_key_table;
+    static const std::vector<int> pc_2_key_table;
+
+
     static const int32_t rotation_key_mask = 0b00001111111111111111111111111111;    // 28-bit mask
     
     // returns nth (by index) bit of passed bit sequence
     static int64_t get_nth_bit(int n, int64_t data);
 
-    // divides 56-bit key on 2 28-bit keys
-    static std::map<std::string, int32_t> divide_perm_key(int64_t perm_key); 
+    // divides data by provided masks and their lenghts
+    static std::map<std::string, uint32_t> divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length); 
 
     // restores 56-bit from 28-bit left & right parts
-    static int64_t restore_key(std::map<std::string, int32_t> key_parts);
+    static int64_t restore_key(std::map<std::string, uint32_t> key_parts);
 
     // rotates passed 32 bits cyclically to the left
     // n - passed number, cycle - number of bits for cycle
