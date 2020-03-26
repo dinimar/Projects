@@ -14,6 +14,25 @@ const std::vector<int> DES::ip_table =
      61, 53, 45, 37, 29, 21, 13, 5,
      63, 55, 47, 39, 31, 23, 15, 7};
 
+const std::vector<int> DES::pc_1_key_table_ =
+      {
+        57, 49, 41, 33, 25, 17, 9, 1,
+        58, 50, 42, 34, 26, 18, 10, 2,
+        59, 51, 43, 35, 27, 19, 11, 3,
+        60, 52, 44, 36, 63, 55, 47, 39,
+        31, 23, 15, 7, 62, 54, 46, 38,
+        30, 22, 14, 6, 61, 53, 45, 37,
+        29, 21, 13, 5, 28, 20, 12, 4};
+
+const std::vector<int> DES::pc_2_key_table_ =
+    {
+        14, 17, 11, 24, 1, 5, 3, 28,
+        15, 6, 21, 10, 23, 19, 12, 4,
+        26, 8, 16, 7, 27, 20, 13, 2,
+        41, 52, 31, 37, 47, 55, 30, 40,
+        51, 45, 33, 48, 44, 49, 39, 56,
+        34, 53, 46, 42, 50, 36, 29, 32};
+
 int64_t DES::get_nth_bit(int n, int64_t data)
 {
     return (data >> n) & 1; // shift bits and mask
@@ -46,19 +65,19 @@ int64_t DES::permutate(int64_t data, std::vector<int> table)
     return perm_data;
 }
 
-int64_t DES::generate_round_key()
-{
-    int64_t perm_data = 0; // zero-initialized permutated data
-    int k = 0;             // multiplier for bits
+// int64_t DES::generate_round_key()
+// {
+//     int64_t perm_data = 0; // zero-initialized permutated data
+//     int k = 0;             // multiplier for bits
 
-    for (int &a : p_key_table_)
-    {
-        perm_data += get_nth_bit(a, key_) << k; // bit shifting by 0, 1 till 63 bits
-        ++k;
-    }
+//     for (int &a : p_key_table_)
+//     {
+//         perm_data += get_nth_bit(a, key_) << k; // bit shifting by 0, 1 till 63 bits
+//         ++k;
+//     }
 
-    return perm_data;
-}
+//     return perm_data;
+// }
 
 // int64_t DES::final_permutate(int64_t data)
 // {
@@ -102,7 +121,7 @@ int64_t DES::restore_key(std::map<std::string, int32_t> key_parts)
     int64_t left_tmp = key_parts["left"];   // convert to int64_t to get zeros in left part
 
     key += (left_tmp << 28);
-    
+
     return key;
 }
 
@@ -116,12 +135,12 @@ int64_t DES::encrypt(int64_t data)
 
     // int64_t round_key = permutate(key_, p_key_table_);      // initial round key (no bit shifting)
 
+    int64_t iter_key = permutate(key_, DES::pc_1_key_table_);  // PC-1 permutation
     // 15 rounds of encryption
     for (size_t i = 0; i < 15; ++i)
     {
         // Key generation
-        int64_t perm_key = permutate(key_, DES::p_key_table_);  // PS-1 permutation
-        std::map<std::string, int32_t> key_parts = DES::divide_perm_key(perm_key);
+        std::map<std::string, int32_t> key_parts = DES::divide_perm_key(iter_key);
 
         if ((i >= 1 & i <= 7) || (i >= 9 && i <= 14))
         {
@@ -134,7 +153,8 @@ int64_t DES::encrypt(int64_t data)
             key_parts["right"] = rotl32(key_parts["right"], 28, 1);
         }
 
-        int64_t rest_key = DES::restore_key(key_parts);
+        iter_key = DES::restore_key(key_parts);         // 56-bit restored from 28-bit parts
+        int64_t round_key = permutate(iter_key, DES::pc_2_key_table_);
     }
 
     // int64_t out_data_right = permutate(right_data, r_block_table);

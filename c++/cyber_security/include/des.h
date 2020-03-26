@@ -11,10 +11,14 @@ private:
     static const int BYTES_NUM = 7;
     static const int64_t left_mask = 0x1111111100000000;
     static const int64_t right_mask = 0x0000000011111111;
-    static const int64_t key_left_mask_ = 0x1111111;             // 28 left bits
-    static const int64_t key_right_mask_ = 0x1111111110000000;   // 28 right bits
 
     int64_t key_; // key for encryption/decryption using only last 7 bytes
+    static const int64_t key_left_mask_ = 0x1111111;             // 28 left bits
+    static const int64_t key_right_mask_ = 0x1111111110000000;   // 28 right bits
+    static const std::vector<int> pc_1_key_table_;
+    static const std::vector<int> pc_2_key_table_;
+
+    static const std::vector<int> ip_table_;
 
     std::vector<int> final_table =
         {40, 8, 48, 16, 56, 24, 64, 32,
@@ -91,16 +95,6 @@ private:
                             {2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11},
                         }}}};
 
-    std::vector<int> p_key_table_
-    {
-        57, 49, 41, 33, 25, 17, 9, 1,
-        58, 50, 42, 34, 26, 18, 10, 2,
-        59, 51, 43, 35, 27, 19, 11, 3,
-        60, 52, 44, 36, 63, 55, 47, 39,
-        31, 23, 15, 7, 62, 54, 46, 38,
-        30, 22, 14, 6, 61, 53, 45, 37,
-        29, 21, 13, 5, 28, 20, 12, 4};
-
 
 public:
     // Constructor
@@ -135,7 +129,7 @@ public:
 
     // generates round key (without shifting)
     // basing on passed key_
-    int64_t generate_round_key();
+    // int64_t generate_round_key();
 
     // permutation functions
     static int64_t permutate(int64_t data, std::vector<int> table);
