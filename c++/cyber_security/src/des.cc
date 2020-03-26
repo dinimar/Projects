@@ -33,6 +33,16 @@ const std::vector<int> DES::pc_2_key_table =
         51, 45, 33, 48, 44, 49, 39, 56,
         34, 53, 46, 42, 50, 36, 29, 32};
 
+const std::vector<int> DES::r_block_table =
+    {32, 1, 2, 3, 4, 5,
+     4, 5, 6, 7, 8, 9,
+     8, 9, 10, 11, 12, 13,
+     12, 13, 14, 15, 16, 17,
+     16, 17, 18, 19, 20, 21,
+     20, 21, 22, 23, 24, 25,
+     24, 25, 26, 27, 28, 29,
+     28, 29, 30, 31, 32, 1};
+
 const std::map<std::string, int64_t> DES::key_masks{
     {"left", 0xFFFFFFF},            // 28 left bits 
     {"right", 0xFFFFFFFFF0000000}   // 28 right bits
@@ -113,24 +123,24 @@ int64_t DES::permutate(int64_t data, std::vector<int> table)
 //     }
 // }
 
-std::map<std::string, uint32_t> DES::divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length)
+std::map<std::string, uint64_t> DES::divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length)
 {
-    std::map<std::string, uint32_t> data_parts; // result vectors
+    std::map<std::string, uint64_t> data_parts; // result vectors
 
     // left bits
-    data_parts["left"] = (data & masks["left"]);            
+    data_parts["left"] = data & masks["left"];            
     // right bits, extra shifting for removing zero bits
-    data_parts["right"] = (data & masks["right"]) >> mask_length;                
+    data_parts["right"] = data & masks["right"];
+    data_parts["right"] = data_parts["right"] >> mask_length;
 
     return data_parts;
 }
 
-int64_t DES::restore_key(std::map<std::string, uint32_t> key_parts)
+int64_t DES::restore_key(std::map<std::string, uint64_t> key_parts)
 {
     int64_t key = key_parts["right"];
-    int64_t left_tmp = key_parts["left"];   // convert to int64_t to get zeros in left part
 
-    key += (left_tmp << 28);
+    key += (key_parts["left"] << 28);
 
     return key;
 }
@@ -138,7 +148,7 @@ int64_t DES::restore_key(std::map<std::string, uint32_t> key_parts)
 int64_t DES::encrypt(int64_t data)
 {
     int64_t init_perm_data = permutate(data, DES::ip_table); // perform initial permutation
-
+    std::map<std::string, uint64_t> data_parts = DES::divide(init_perm_data, DES::data_masks, 32);
     // divide on blocks by 32 bits
     // int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
     // int32_t right_data = init_perm_data & right_mask;
@@ -150,7 +160,7 @@ int64_t DES::encrypt(int64_t data)
     for (size_t i = 0; i < 15; ++i)
     {
         // Key generation
-        std::map<std::string, uint32_t> key_parts = DES::divide(iter_key, DES::key_masks, 28);
+        std::map<std::string, uint64_t> key_parts = DES::divide(iter_key, DES::key_masks, 28);
 
         if ((i >= 1 & i <= 7) || (i >= 9 && i <= 14))
         {

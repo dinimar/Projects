@@ -22,17 +22,7 @@ private:
          36, 4, 44, 12, 52, 20, 60, 28,
          35, 3, 43, 11, 51, 19, 59, 27,
          34, 2, 42, 10, 50, 18, 58, 26,
-         33, 1, 41, 9, 49, 17, 57, 25};
-
-    std::vector<int> r_block_table =
-        {32, 1, 2, 3, 4, 5,
-         4, 5, 6, 7, 8, 9,
-         8, 9, 10, 11, 12, 13,
-         12, 13, 14, 15, 16, 17,
-         16, 17, 18, 19, 20, 21,
-         20, 21, 22, 23, 24, 25,
-         24, 25, 26, 27, 28, 29,
-         28, 29, 30, 31, 32, 1};
+         33, 1, 41, 9, 49, 17, 57, 25};        
 
     std::vector<std::vector<std::vector<int8_t>>> // 8 S-boxes with 4x16 table
         s_box_table = {{                          
@@ -104,6 +94,7 @@ public:
     // https://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_(IP)
     // initial permuatation table
     static const std::vector<int> ip_table;
+    static const std::vector<int> r_block_table;
 
     static const std::map<std::string, int64_t> key_masks;
     static const std::map<std::string, int64_t> data_masks;
@@ -117,10 +108,10 @@ public:
     static int64_t get_nth_bit(int n, int64_t data);
 
     // divides data by provided masks and their lenghts
-    static std::map<std::string, uint32_t> divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length); 
+    static std::map<std::string, uint64_t> divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length); 
 
     // restores 56-bit from 28-bit left & right parts
-    static int64_t restore_key(std::map<std::string, uint32_t> key_parts);
+    static int64_t restore_key(std::map<std::string, uint64_t> key_parts);
 
     // rotates passed 32 bits cyclically to the left
     // n - passed number, cycle - number of bits for cycle
