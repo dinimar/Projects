@@ -40,6 +40,7 @@ public:
     static const std::vector<int> r_block_table;
     // 8 S-boxes with 4x16 table
     static const std::vector<std::vector<std::vector<int8_t>>> s_box_table;    
+    static const std::vector<int> p_table;
     
     static const std::map<std::string, int64_t> key_masks;
     static const std::map<std::string, int64_t> data_masks;

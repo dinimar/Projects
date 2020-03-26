@@ -98,6 +98,13 @@ const std::vector<std::vector<std::vector<int8_t>>> DES::s_box_table = {{
         {2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11},
     }}}};
 
+const std::vector<int> DES::p_table {
+    16, 7, 20, 21, 29, 12, 28, 17,
+    1, 15, 23, 26, 5, 18, 31, 10,
+    2, 8, 24, 14, 32, 27, 3, 9,
+    19, 13, 30, 6, 22, 11, 4, 25
+};
+
 const std::map<std::string, int64_t> DES::key_masks{
     {"left", 0xFFFFFFF},            // 28 left bits 
     {"right", 0xFFFFFFFFF0000000}   // 28 right bits
@@ -260,6 +267,10 @@ int64_t DES::encrypt(int64_t data)
         }
         data_parts["left"] = tmp_left;
         data_parts["right"] = tmp_right;
+
+        // P-permutation
+        data_parts["left"] = DES::permutate(data_parts["left"], DES::p_table);
+        data_parts["right"] = DES::permutate(data_parts["right"], DES::p_table);
     }
 
     // int64_t out_data_right = permutate(right_data, r_block_table);
