@@ -74,12 +74,25 @@ BOOST_AUTO_TEST_CASE( des_restore_key )
 
   BOOST_CHECK_BITWISE_EQUAL(0x00FFFFFFFFFFFFFF, rest_key);
 }
-// BOOST_AUTO_TEST_CASE( des_encrypt )
-// {
-//   int64_t key = 0x0101010101010101;
-//   int64_t data = 0x95F8A5E5DD31D900;
-  
-//   DES des(key);  // initialize object
 
-//   BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
-// }
+BOOST_AUTO_TEST_CASE ( des_permutate_r_block )
+{
+  int64_t part_data = 0xF0F0F0F0;
+  printf("%d\n", part_data);
+
+
+  part_data = DES::permutate(part_data, DES::r_block_table);
+  // BOOST_CHECK_BITWISE_EQUAL(part_data, );
+
+  printf("%d\n", part_data);
+}
+
+BOOST_AUTO_TEST_CASE( des_encrypt )
+{
+  int64_t key = 0x0101010101010101;
+  int64_t data = 0x95F8A5E5DD31D900;
+  
+  DES des(key);  // initialize object
+
+  BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
+}
