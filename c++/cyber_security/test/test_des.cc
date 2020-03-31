@@ -75,6 +75,14 @@ BOOST_AUTO_TEST_CASE ( des_permutate_r_block )
   int64_t perm_data = DES::permutate(part_data, DES::r_block_table);
 }
 
+BOOST_AUTO_TEST_CASE ( des_bitwise_sum )
+{
+  int64_t e_data = 0x7A15557A1555;  // data returned by e function
+  int64_t key = 0x1B02EFFC7072;
+
+  BOOST_CHECK_BITWISE_EQUAL(0x6117BA866527, DES::bitwise_sum(e_data, key));  
+}
+
 BOOST_AUTO_TEST_CASE ( des_extract_block6 )
 {
   int64_t data_48bit = 0x0000FFFFFFFFFFFF;

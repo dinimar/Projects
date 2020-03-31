@@ -155,6 +155,10 @@ int64_t DES::permutate(int64_t data, std::vector<int> table)
     return perm_data;
 }
 
+int64_t DES::bitwise_sum(int64_t summand1, int64_t summand2)
+{
+    return summand1 ^ summand2;
+}
 // int64_t DES::generate_round_key()
 // {
 //     int64_t perm_data = 0; // zero-initialized permutated data
@@ -247,8 +251,8 @@ int64_t DES::encrypt(int64_t data)
             key_parts["right"] = rotl32(key_parts["right"], 28, 1);
         }
 
-        iter_key = DES::restore_key(key_parts);         // 56-bit restored from 28-bit parts
-        int64_t round_key = permutate(iter_key, DES::pc_2_key_table);
+        iter_key = DES::restore_key(key_parts);                             // 56-bit restored from 28-bit parts
+        int64_t round_key = DES::permutate(iter_key, DES::pc_2_key_table);  // generate 48-bit key from 56 bits
 
         // E function
         data_parts["left"] ^= round_key;

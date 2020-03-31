@@ -75,6 +75,7 @@ public:
     // generates round key (without shifting)
     // basing on passed key_
     // int64_t generate_round_key();
+    static int64_t bitwise_sum(int64_t summand1, int64_t summand2);
 
     // permutation functions
     static int64_t permutate(int64_t data, std::vector<int> table);
