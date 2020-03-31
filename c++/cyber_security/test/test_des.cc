@@ -69,13 +69,10 @@ BOOST_AUTO_TEST_CASE( des_restore_key )
 
 BOOST_AUTO_TEST_CASE ( des_permutate_r_block )
 {
-  int64_t part_data = 0xF0F0F0F0;
-  // printf("%d\n", part_data);
+  int64_t part_data = 0xF0AAF0AA;
+  int64_t exp_res = 0xA15557A1555;
 
-
-  part_data = DES::permutate(part_data, DES::r_block_table);
-  // BOOST_CHECK_BITWISE_EQUAL(part_data, );
-  // printf("%d\n", part_data);
+  int64_t perm_data = DES::permutate(part_data, DES::r_block_table);
 }
 
 BOOST_AUTO_TEST_CASE ( des_extract_block6 )
