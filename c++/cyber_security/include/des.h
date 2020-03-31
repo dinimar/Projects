@@ -53,7 +53,7 @@ public:
     // returns nth (by index) bit of passed bit sequence
     static int64_t get_nth_bit(int n, int64_t data);
 
-    // return nth 4-bit block (by index) of passed bit sequence
+    // returns nth 6-bit block (by index) of passed bit sequence
     // help function for S permutation
     static int64_t extract_block6(int n, int64_t data);
 

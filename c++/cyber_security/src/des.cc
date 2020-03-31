@@ -118,7 +118,8 @@ int64_t DES::get_nth_bit(int n, int64_t data)
 
 int64_t DES::extract_block6(int n, int64_t data)
 {
-    return (data >> (6 * n)) & 0x3F;    // 0x2F = 0b111111 - 6 bits
+    // shift block to the left, multiply on 0x3F to remove unnecessary bits
+    return (data >> (6 * (7-n))) & 0x3F;    // 0x3F = 0b111111 - 6 bits
 }
 
 int64_t DES::s_box(int n, int64_t block)

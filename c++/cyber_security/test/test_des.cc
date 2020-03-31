@@ -12,21 +12,13 @@ BOOST_AUTO_TEST_CASE ( des_nth_bit )
   BOOST_CHECK_EQUAL(1, DES::get_nth_bit(1, a));
 }
 
-BOOST_AUTO_TEST_CASE ( des_block4 )
-{
-  int64_t a = 0x7F;
+// BOOST_AUTO_TEST_CASE ( des_s_box )
+// {
+//   int64_t a = 0x7F;
 
-  BOOST_CHECK_EQUAL(0x3F, DES::extract_block6(0, a));
-  BOOST_CHECK_EQUAL(0x1, DES::extract_block6(1, a));
-}
-
-BOOST_AUTO_TEST_CASE ( des_s_box )
-{
-  int64_t a = 0x7F;
-
-  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(0, a));
-  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1, DES::extract_block6(1, a));
-}
+//   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(0, a));
+//   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1, DES::extract_block6(1, a));
+// }
 
 BOOST_AUTO_TEST_CASE( des_permutation )
 {
@@ -78,13 +70,31 @@ BOOST_AUTO_TEST_CASE( des_restore_key )
 BOOST_AUTO_TEST_CASE ( des_permutate_r_block )
 {
   int64_t part_data = 0xF0F0F0F0;
-  printf("%d\n", part_data);
+  // printf("%d\n", part_data);
 
 
   part_data = DES::permutate(part_data, DES::r_block_table);
   // BOOST_CHECK_BITWISE_EQUAL(part_data, );
+  // printf("%d\n", part_data);
+}
 
-  printf("%d\n", part_data);
+BOOST_AUTO_TEST_CASE ( des_extract_block6 )
+{
+  int64_t data_48bit = 0x0000FFFFFFFFFFFF;
+
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(0, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(1, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(2, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(3, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(4, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(5, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(6, data_48bit));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(7, data_48bit));
+
+  int64_t a = 0x7F;
+
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1, DES::extract_block6(6, a));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(7, a));
 }
 
 BOOST_AUTO_TEST_CASE( des_encrypt )
