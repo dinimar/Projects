@@ -7,18 +7,12 @@
 BOOST_AUTO_TEST_CASE ( des_nth_bit )
 {
   int64_t a = 2;
+  int64_t b = 0x1;
 
   BOOST_CHECK_EQUAL(0, DES::get_nth_bit(0, a));
   BOOST_CHECK_EQUAL(1, DES::get_nth_bit(1, a));
+  BOOST_CHECK_EQUAL(1, DES::get_nth_bit(0, b));
 }
-
-// BOOST_AUTO_TEST_CASE ( des_s_box )
-// {
-//   int64_t a = 0x7F;
-
-//   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(0, a));
-//   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1, DES::extract_block6(1, a));
-// }
 
 BOOST_AUTO_TEST_CASE( des_permutation )
 {
@@ -102,12 +96,35 @@ BOOST_AUTO_TEST_CASE ( des_extract_block6 )
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3F, DES::extract_block6(7, a));
 }
 
-BOOST_AUTO_TEST_CASE( des_encrypt )
+BOOST_AUTO_TEST_CASE ( des_s_box )
 {
-  int64_t key = 0x0101010101010101;
-  int64_t data = 0x95F8A5E5DD31D900;
-  
-  DES des(key);  // initialize object
+  int64_t a = 0x7F;
 
-  BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x0, DES::s_box(0, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x3, DES::s_box(1, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xD, DES::s_box(2, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xD, DES::s_box(3, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xE, DES::s_box(4, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xA, DES::s_box(5, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xD, DES::s_box(6, DES::extract_block6(6, a)));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1, DES::s_box(7, DES::extract_block6(6, a)));
 }
+
+// BOOST_AUTO_TEST_CASE( des_P_S_permutations )
+// {
+//   int64_t left_block, right_block = 0x6117BA866527;
+//   DES::s_func(left_block, right_block);
+
+//   left_block = DES::permutate(left_block, DES::p_table);
+//   BOOST_CHECK_BITWISE_EQUAL(0x234AA9BB, left_block);
+// }
+
+// BOOST_AUTO_TEST_CASE( des_encrypt )
+// {
+//   int64_t key = 0x0101010101010101;
+//   int64_t data = 0x95F8A5E5DD31D900;
+  
+//   DES des(key);  // initialize object
+
+//   BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
+// }

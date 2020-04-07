@@ -55,7 +55,7 @@ public:
 
     // returns nth 6-bit block (by index) of passed bit sequence
     // help function for S permutation
-    static int64_t extract_block6(int n, int64_t data);
+    static int64_t extract_block6(int n, const int64_t & data);
 
     // transforms passed 6-bit block into 4-bit block from S box table
     // arguments: n - block number [0-8]; data - block
@@ -77,8 +77,11 @@ public:
     // int64_t generate_round_key();
     static int64_t bitwise_sum(int64_t summand1, int64_t summand2);
 
+    // updates left & right block via s_box permutation
+    static void s_func(int64_t & left_block, int64_t & right_block);
+
     // permutation functions
-    static int64_t permutate(int64_t data, std::vector<int> table);
+    static int64_t permutate(int64_t data, const std::vector<int> & table);
 
     int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
 

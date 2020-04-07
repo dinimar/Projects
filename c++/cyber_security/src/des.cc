@@ -113,19 +113,22 @@ const std::map<std::string, int64_t> DES::data_masks {
 
 int64_t DES::get_nth_bit(int n, int64_t data)
 {
-    return (data >> n) & 1; // shift bits and mask
+    return ((data >> n) & 1); // shift bits and mask
 }
 
-int64_t DES::extract_block6(int n, int64_t data)
+int64_t DES::extract_block6(int n, const int64_t & data)
 {
     // shift block to the left, multiply on 0x3F to remove unnecessary bits
-    return (data >> (6 * (7-n))) & 0x3F;    // 0x3F = 0b111111 - 6 bits
+    return ((data >> (6 * (7-n))) & 0x3F);  // 0x3F = 0b111111 - 6 bits
 }
 
 int64_t DES::s_box(int n, int64_t block)
 {
     // value accessed by block number and masking on passing block
-    return DES::s_box_table[n][block & 0x21][block & 0x1E];
+    int8_t row = (get_nth_bit(5, block) << 1) + get_nth_bit(0, block);
+    int8_t col = (block & 0x1E) >> 1;
+
+    return (DES::s_box_table[n][row][col]);
 }
 
 int32_t DES::rotl32(int32_t n, unsigned int cycle, unsigned int shifts)
@@ -139,12 +142,12 @@ int32_t DES::rotl32(int32_t n, unsigned int cycle, unsigned int shifts)
     return n & rotation_key_mask; // remove bits after 28th
 }
 
-int64_t DES::permutate(int64_t data, std::vector<int> table)
+int64_t DES::permutate(int64_t data, const std::vector<int> & table)
 {
     int64_t perm_data = 0; // zero-initialized permutated data
     int k = 0;             // multiplier for bits
 
-    for (int &a : table)
+    for (const int &a : table)
     {
         // bit shifting by 0, 1 till 63 bits,
         // a value need decrease by 1 to get index
@@ -153,6 +156,21 @@ int64_t DES::permutate(int64_t data, std::vector<int> table)
     }
 
     return perm_data;
+}
+
+void DES::s_func(int64_t & left_block, int64_t & right_block)
+{
+    int64_t tmp_left = 0;
+    int64_t tmp_right = 0;
+
+    for(size_t i=0; i<6; i++)
+    {
+        tmp_left += (DES::s_box(i, DES::extract_block6(i, left_block)) << (6-i)*4);
+        tmp_right += (DES::s_box(i, DES::extract_block6(i, right_block)) << (6-i)*4);  
+    }
+
+    left_block = tmp_left;
+    right_block = tmp_right;
 }
 
 int64_t DES::bitwise_sum(int64_t summand1, int64_t summand2)
