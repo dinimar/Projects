@@ -163,10 +163,10 @@ void DES::s_func(int64_t & left_block, int64_t & right_block)
     int64_t tmp_left = 0;
     int64_t tmp_right = 0;
 
-    for(size_t i=0; i<6; i++)
+    for(size_t i=0; i<8; i++)
     {
-        tmp_left += (DES::s_box(i, DES::extract_block6(i, left_block)) << (6-i)*4);
-        tmp_right += (DES::s_box(i, DES::extract_block6(i, right_block)) << (6-i)*4);  
+        tmp_left += (DES::s_box(i, DES::extract_block6(i, left_block)) << (8-i-1)*4);
+        tmp_right += (DES::s_box(i, DES::extract_block6(i, right_block)) << (8-i-1)*4);  
     }
 
     left_block = tmp_left;
