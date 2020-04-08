@@ -83,7 +83,7 @@ public:
     // permutation functions
     static int64_t permutate(int64_t data, int size, const std::vector<int> & table);
 
-    int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
+    // int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
 
     // encrypts passed data with previously defined key
     int64_t encrypt(int64_t data);
