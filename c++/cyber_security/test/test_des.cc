@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE(des_P_S_permutations)
 BOOST_AUTO_TEST_CASE(des_round_key)
 {
   DES des(0x133457799BBCDFF1);
-  
+
   BOOST_CHECK_BITWISE_EQUAL(0x1B02EFFC7072, des.round_key(0));
   BOOST_CHECK_BITWISE_EQUAL(0x79AED9DBC9E5, des.round_key(1));
   BOOST_CHECK_BITWISE_EQUAL(0x55FC8A42CF99, des.round_key(2));
@@ -225,12 +225,26 @@ BOOST_AUTO_TEST_CASE(des_round_key)
   BOOST_CHECK_BITWISE_EQUAL(0xCB3D8B0E17F5, des.round_key(15));
 }
 
-// BOOST_AUTO_TEST_CASE( des_encrypt )
-// {
-//   int64_t key = 0x0101010101010101;
-//   int64_t data = 0x95F8A5E5DD31D900;
+BOOST_AUTO_TEST_CASE(des_round_encrypt)
+{
+  int64_t key = 0x133457799BBCDFF1;
+  int64_t data = 0x123456789ABCDEF;
+  std::map<std::string, int64_t> blocks = {{"left", 0xCC00CCFF}, {"right", 0xF0AAF0AA}};
 
-//   DES des(key);  // initialize object
+  DES des(key); // initialize object
 
-//   BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
-// }
+  des.round_encrypt(blocks, 0);
+
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xF0AAF0AA, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xEF4A6544, blocks["right"]);
+}
+
+BOOST_AUTO_TEST_CASE(des_encrypt)
+{
+  int64_t key = 0x133457799BBCDFF1;
+  int64_t data = 0x123456789ABCDEF;
+
+  DES des(key); // initialize object
+
+  // BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
+}

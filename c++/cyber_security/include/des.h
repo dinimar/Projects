@@ -13,6 +13,7 @@ private:
     static const int64_t right_mask = 0x0000000011111111;
 
     int64_t key_; // key for encryption/decryption using only last 7 bytes
+    std::map<std::string, int64_t> data_blocks;
 
     std::vector<int> final_table =
         {40, 8, 48, 16, 56, 24, 64, 32,
@@ -85,6 +86,10 @@ public:
     // generates round key
     // round_num - rounder number [0..15]
     int64_t round_key(const int &round_num);
+
+    // encrypts blocks for a round
+    // blocks - map of right, left block, round_num - round number
+    void round_encrypt(std::map<std::string, int64_t> & blocks, int round_num);
 
     // encrypts passed data with previously defined key
     int64_t encrypt(int64_t data);
