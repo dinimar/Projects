@@ -74,7 +74,11 @@ BOOST_AUTO_TEST_CASE(des_bitwise_sum)
   int64_t e_data = 0x7A15557A1555; // data returned by e function
   int64_t key = 0x1B02EFFC7072;
 
+  int64_t left_block = 0xCC00CCFF;
+  int64_t right_block = 0x234AA9BB;
+
   BOOST_CHECK_BITWISE_EQUAL(0x6117BA866527, DES::bitwise_sum(e_data, key));
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xEF4A6544, DES::bitwise_sum(left_block, right_block));
 }
 
 BOOST_AUTO_TEST_CASE(des_extract_block6)
