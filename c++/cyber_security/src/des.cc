@@ -111,11 +111,6 @@ const std::map<std::string, int64_t> DES::data_masks {
     {"right", 0xFFFFFFFF00000000}   // 32 right bits
 };
 
-int64_t DES::get_nth_bit(int n, int64_t data)
-{
-    return ((data >> n) & 1); // shift bits and mask
-}
-
 int64_t DES::extract_block6(int n, const int64_t & data)
 {
     // shift block to the left, multiply on 0x3F to remove unnecessary bits
@@ -125,7 +120,7 @@ int64_t DES::extract_block6(int n, const int64_t & data)
 int64_t DES::s_box(int n, int64_t block)
 {
     // value accessed by block number and masking on passing block
-    int8_t row = (get_nth_bit(5, block) << 1) + get_nth_bit(0, block);
+    int8_t row = (get_nth_bit(0, 6, block) << 1) + get_nth_bit(5, 6, block);
     int8_t col = (block & 0x1E) >> 1;
 
     return (DES::s_box_table[n][row][col]);
@@ -135,42 +130,42 @@ int32_t DES::rotl32(int32_t n, unsigned int cycle, unsigned int shifts)
 {
     for (size_t i = 0; i < shifts; i++)
     {
-        n << 1;                  // shift to the left
-        n += get_nth_bit(n, 29); // add shifted out bit to the begin
+        n << 1;                         // shift to the left
+        n += get_nth_bit(n, 32, 29);    // add shifted out bit to the begin
     }
 
     return n & rotation_key_mask; // remove bits after 28th
 }
 
-int64_t DES::permutate(int64_t data, const std::vector<int> & table)
+int64_t DES::get_nth_bit(int n, int size, int64_t data)
+{
+    return ((data >> (size-n-1)) & 1); // shift bits and mask
+}
+
+int64_t DES::permutate(int64_t data, int size, const std::vector<int> & table)
 {
     int64_t perm_data = 0; // zero-initialized permutated data
-    int k = 0;             // multiplier for bits
 
-    for (const int &a : table)
+    for (size_t i=0; i<size; i++)
     {
         // bit shifting by 0, 1 till 63 bits,
         // a value need decrease by 1 to get index
-        perm_data += (get_nth_bit(a - 1, data) << k);
-        ++k;
+        perm_data += (get_nth_bit(table[i]-1, size, data) << size-i-1);
     }
 
     return perm_data;
 }
 
-void DES::s_func(int64_t & left_block, int64_t & right_block)
+void DES::s_func(int64_t & right_block)
 {
     int64_t tmp_left = 0;
-    int64_t tmp_right = 0;
 
     for(size_t i=0; i<8; i++)
     {
-        tmp_left += (DES::s_box(i, DES::extract_block6(i, left_block)) << (8-i-1)*4);
-        tmp_right += (DES::s_box(i, DES::extract_block6(i, right_block)) << (8-i-1)*4);  
+        tmp_left += (DES::s_box(i, DES::extract_block6(i, right_block)) << ((8-i-1)*4));
     }
 
-    left_block = tmp_left;
-    right_block = tmp_right;
+    right_block = tmp_left;
 }
 
 int64_t DES::bitwise_sum(int64_t summand1, int64_t summand2)
@@ -237,67 +232,67 @@ int64_t DES::restore_key(std::map<std::string, uint64_t> key_parts)
     return key;
 }
 
-int64_t DES::encrypt(int64_t data)
-{
-    int64_t init_perm_data = permutate(data, DES::ip_table); // perform initial permutation
-    std::map<std::string, uint64_t> data_parts = DES::divide(init_perm_data, DES::data_masks, 32);
-    // divide on blocks by 32 bits
-    // int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
-    // int32_t right_data = init_perm_data & right_mask;
+// int64_t DES::encrypt(int64_t data)
+// {
+//     int64_t init_perm_data = permutate(data, DES::ip_table); // perform initial permutation
+//     std::map<std::string, uint64_t> data_parts = DES::divide(init_perm_data, DES::data_masks, 32);
+//     // divide on blocks by 32 bits
+//     // int32_t left_data = (init_perm_data & left_mask) >> 32; // needs extra shifting to reduce size to 32 bits
+//     // int32_t right_data = init_perm_data & right_mask;
 
-    // int64_t round_key = permutate(key_, p_key_table_);      // initial round key (no bit shifting)
+//     // int64_t round_key = permutate(key_, p_key_table_);      // initial round key (no bit shifting)
 
-    int64_t iter_key = permutate(key_, DES::pc_1_key_table);  // PC-1 permutation
-    // 15 rounds of encryption
-    for (size_t i = 0; i < 15; ++i)
-    {
-        // R block permutation
-        data_parts["left"] = DES::permutate(data_parts["left"], DES::r_block_table);
-        data_parts["right"] = DES::permutate(data_parts["right"], DES::r_block_table);
+//     int64_t iter_key = permutate(key_, DES::pc_1_key_table);  // PC-1 permutation
+//     // 15 rounds of encryption
+//     for (size_t i = 0; i < 15; ++i)
+//     {
+//         // R block permutation
+//         data_parts["left"] = DES::permutate(data_parts["left"], DES::r_block_table);
+//         data_parts["right"] = DES::permutate(data_parts["right"], DES::r_block_table);
 
-        // Key generation
-        std::map<std::string, uint64_t> key_parts = DES::divide(iter_key, DES::key_masks, 28);
+//         // Key generation
+//         std::map<std::string, uint64_t> key_parts = DES::divide(iter_key, DES::key_masks, 28);
 
-        if ((i >= 1 & i <= 7) || (i >= 9 && i <= 14))
-        {
-            key_parts["left"] = rotl32(key_parts["left"], 28, 2);
-            key_parts["right"] = rotl32(key_parts["right"], 28, 2);
-        }
-        else
-        {
-            key_parts["left"] = rotl32(key_parts["left"], 28, 1);
-            key_parts["right"] = rotl32(key_parts["right"], 28, 1);
-        }
+//         if ((i >= 1 & i <= 7) || (i >= 9 && i <= 14))
+//         {
+//             key_parts["left"] = rotl32(key_parts["left"], 28, 2);
+//             key_parts["right"] = rotl32(key_parts["right"], 28, 2);
+//         }
+//         else
+//         {
+//             key_parts["left"] = rotl32(key_parts["left"], 28, 1);
+//             key_parts["right"] = rotl32(key_parts["right"], 28, 1);
+//         }
 
-        iter_key = DES::restore_key(key_parts);                             // 56-bit restored from 28-bit parts
-        int64_t round_key = DES::permutate(iter_key, DES::pc_2_key_table);  // generate 48-bit key from 56 bits
+//         iter_key = DES::restore_key(key_parts);                             // 56-bit restored from 28-bit parts
+//         int64_t round_key = DES::permutate(iter_key, DES::pc_2_key_table);  // generate 48-bit key from 56 bits
 
-        // E function
-        data_parts["left"] ^= round_key;
-        data_parts["right"] ^= round_key;
+//         // E function
+//         data_parts["left"] ^= round_key;
+//         data_parts["right"] ^= round_key;
 
-        // S-permutation
-        int64_t tmp_left = 0;
-        int64_t tmp_right = 0;
-        for(size_t i=0; i<6; i++)
-        {
-            tmp_left += (DES::s_box(i, DES::extract_block6(i, data_parts["left"])) << i*4);
-            tmp_right += (DES::s_box(i, DES::extract_block6(i, data_parts["right"])) << i*4);  
-        }
-        data_parts["left"] = tmp_left;
-        data_parts["right"] = tmp_right;
+//         // S-permutation
+//         int64_t tmp_left = 0;
+//         int64_t tmp_right = 0;
+//         for(size_t i=0; i<6; i++)
+//         {
+//             tmp_left += (DES::s_box(i, DES::extract_block6(i, data_parts["left"])) << i*4);
+//             tmp_right += (DES::s_box(i, DES::extract_block6(i, data_parts["right"])) << i*4);  
+//         }
+//         data_parts["left"] = tmp_left;
+//         data_parts["right"] = tmp_right;
 
-        // P-permutation
-        data_parts["left"] = DES::permutate(data_parts["left"], DES::p_table);
-        data_parts["right"] = DES::permutate(data_parts["right"], DES::p_table);
-    }
+//         // P-permutation
+//         data_parts["left"] = DES::permutate(data_parts["left"], DES::p_table);
+//         data_parts["right"] = DES::permutate(data_parts["right"], DES::p_table);
+//     }
 
-    // int64_t out_data_right = permutate(right_data, r_block_table);
+//     // int64_t out_data_right = permutate(right_data, r_block_table);
 
-    // int64_t final_perm_data = permutate(data, final_table);
+//     // int64_t final_perm_data = permutate(data, final_table);
 
-    return init_perm_data;
-};
+//     return init_perm_data;
+// };
 
 void bin(int64_t n)
 {

@@ -51,7 +51,7 @@ public:
     static const int32_t rotation_key_mask = 0b00001111111111111111111111111111;    // 28-bit mask
     
     // returns nth (by index) bit of passed bit sequence
-    static int64_t get_nth_bit(int n, int64_t data);
+    static int64_t get_nth_bit(int n, int size, int64_t data);
 
     // returns nth 6-bit block (by index) of passed bit sequence
     // help function for S permutation
@@ -78,10 +78,10 @@ public:
     static int64_t bitwise_sum(int64_t summand1, int64_t summand2);
 
     // updates left & right block via s_box permutation
-    static void s_func(int64_t & left_block, int64_t & right_block);
+    static void s_func(int64_t & left_block);
 
     // permutation functions
-    static int64_t permutate(int64_t data, const std::vector<int> & table);
+    static int64_t permutate(int64_t data, int size, const std::vector<int> & table);
 
     int64_t e_func(int32_t data); // extends 32-bit data to 48-bit with permutations
 
