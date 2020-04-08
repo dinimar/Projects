@@ -24,35 +24,36 @@ BOOST_AUTO_TEST_CASE(des_permutation)
 
 BOOST_AUTO_TEST_CASE(des_rotl32)
 {
-  int32_t rotation_key_mask = 0b00001111111111111111111111111111;
+  int32_t rotation_key_mask = 0xAAAAAAA;
 
   BOOST_CHECK_BITWISE_EQUAL(rotation_key_mask, DES::rotl32(rotation_key_mask, 28, 0));
-  BOOST_CHECK_BITWISE_EQUAL(rotation_key_mask, DES::rotl32(rotation_key_mask, 28, 1));
-  BOOST_CHECK_BITWISE_EQUAL(rotation_key_mask, DES::rotl32(rotation_key_mask, 28, 14));
-  BOOST_CHECK_BITWISE_EQUAL(rotation_key_mask, DES::rotl32(rotation_key_mask, 28, 28));
+  BOOST_CHECK_BITWISE_EQUAL((int32_t)0x5555555, DES::rotl32(rotation_key_mask, 28, 1));
+  BOOST_CHECK_BITWISE_EQUAL(rotation_key_mask, DES::rotl32(rotation_key_mask, 28, 2));
+  BOOST_CHECK_BITWISE_EQUAL((int32_t)0x5555555, DES::rotl32(rotation_key_mask, 28, 3));
 }
 
 BOOST_AUTO_TEST_CASE(des_divide_key)
 {
   int64_t key = 0x00FFFFFFFFFFFFFF; // raw key
 
-  std::map<std::string, uint64_t> key_parts = DES::divide(key, DES::key_masks, 28);
+  std::map<std::string, int64_t> key_parts = DES::divide(key, DES::key_masks, 28);
 
   BOOST_CHECK_BITWISE_EQUAL(key_parts["left"], key_parts["right"]);
 }
 
 BOOST_AUTO_TEST_CASE(des_divide_data)
 {
-  int64_t key = 0xFFFFFFFFFFFFFFFF; // raw data
+  int64_t key = 0x00F0000FF0505005; // raw data
 
-  std::map<std::string, uint64_t> data_parts = DES::divide(key, DES::data_masks, 32);
+  std::map<std::string, int64_t> data_parts = DES::divide(key, DES::key_masks, 28);
 
-  BOOST_CHECK_BITWISE_EQUAL(data_parts["left"], data_parts["right"]);
+  BOOST_CHECK_BITWISE_EQUAL(data_parts["left"], (int64_t)0xF0000FF);
+  BOOST_CHECK_BITWISE_EQUAL(data_parts["right"], (int64_t)0x0505005);
 }
 
 BOOST_AUTO_TEST_CASE(des_restore_key)
 {
-  std::map<std::string, uint64_t> key_parts;
+  std::map<std::string, int64_t> key_parts;
   key_parts["left"] = 0x0FFFFFFF;
   key_parts["right"] = 0x0FFFFFFF;
 
@@ -200,6 +201,13 @@ BOOST_AUTO_TEST_CASE(des_P_S_permutations)
 
   right_block = DES::permutate(right_block, 32, DES::p_table);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x234AA9BB, right_block);
+}
+
+BOOST_AUTO_TEST_CASE(des_round_key_1)
+{
+  DES des(0x133457799BBCDFF1);
+  
+  BOOST_CHECK_BITWISE_EQUAL(0x1B02EFFC7072, des.round_key(0));
 }
 
 // BOOST_AUTO_TEST_CASE( des_encrypt )
