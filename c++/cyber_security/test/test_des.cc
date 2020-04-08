@@ -234,9 +234,68 @@ BOOST_AUTO_TEST_CASE(des_round_encrypt)
   DES des(key); // initialize object
 
   des.round_encrypt(blocks, 0);
-
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0xF0AAF0AA, blocks["left"]);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0xEF4A6544, blocks["right"]);
+
+  des.round_encrypt(blocks, 1);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xEF4A6544, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xCC017709, blocks["right"]);
+
+  des.round_encrypt(blocks, 2);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xCC017709, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xA25C0BF4, blocks["right"]);
+
+  des.round_encrypt(blocks, 3);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xA25C0BF4, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x77220045, blocks["right"]);
+    
+  des.round_encrypt(blocks, 4);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x77220045, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x8A4FA637, blocks["right"]);
+
+  des.round_encrypt(blocks, 5);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x8A4FA637, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xE967CD69, blocks["right"]);
+
+  des.round_encrypt(blocks, 6);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xE967CD69, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x064ABA10, blocks["right"]);
+
+  des.round_encrypt(blocks, 7);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x064ABA10, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xD5694B90, blocks["right"]);
+
+  des.round_encrypt(blocks, 8);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xD5694B90, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x247CC67A, blocks["right"]);
+
+  des.round_encrypt(blocks, 9);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x247CC67A, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xB7D5D7B2, blocks["right"]);
+
+  des.round_encrypt(blocks, 10);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xB7D5D7B2, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xC5783C78, blocks["right"]);
+
+  des.round_encrypt(blocks, 11);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xC5783C78, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x75BD1858, blocks["right"]);
+
+  des.round_encrypt(blocks, 12);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x75BD1858, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x18C3155A, blocks["right"]);
+
+  des.round_encrypt(blocks, 13);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x18C3155A, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xC28C960D, blocks["right"]);
+
+  des.round_encrypt(blocks, 14);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0xC28C960D, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x43423234, blocks["right"]);
+
+  des.round_encrypt(blocks, 15);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x43423234, blocks["left"]);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x0A4CD995, blocks["right"]);
 }
 
 BOOST_AUTO_TEST_CASE(des_encrypt)
