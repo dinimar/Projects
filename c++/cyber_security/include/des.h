@@ -8,22 +8,8 @@
 class DES
 {
 private:
-    static const int BYTES_NUM = 7;
-    static const int64_t left_mask = 0x1111111100000000;
-    static const int64_t right_mask = 0x0000000011111111;
-
     int64_t key_; // key for encryption/decryption using only last 7 bytes
-    std::map<std::string, int64_t> data_blocks;
-
-    std::vector<int> final_table =
-        {40, 8, 48, 16, 56, 24, 64, 32,
-         39, 7, 47, 15, 55, 23, 63, 31,
-         38, 6, 46, 14, 54, 22, 62, 30,
-         37, 5, 45, 13, 53, 21, 61, 29,
-         36, 4, 44, 12, 52, 20, 60, 28,
-         35, 3, 43, 11, 51, 19, 59, 27,
-         34, 2, 42, 10, 50, 18, 58, 26,
-         33, 1, 41, 9, 49, 17, 57, 25};
+    std::map<std::string, uint64_t> data_blocks_;
 
 public:
     // Constructor
@@ -39,6 +25,7 @@ public:
     // https://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_(IP)
     static const std::vector<int> ip_table;
     static const std::vector<int> r_block_table;
+    static const std::vector<int> ip_inv_table;
     // 8 S-boxes with 4x16 table
     static const std::vector<std::vector<std::vector<int8_t>>> s_box_table;
     static const std::vector<int> p_table;
@@ -62,10 +49,10 @@ public:
     static int64_t s_box(int n, int64_t data);
 
     // divides data by provided masks and their lenghts
-    static std::map<std::string, int64_t> divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length);
+    static std::map<std::string, uint64_t> divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length);
 
     // restores 56-bit from 28-bit left & right parts
-    static int64_t restore_key(std::map<std::string, int64_t> key_parts);
+    static int64_t restore_data(std::map<std::string, uint64_t> data_blocks, int block_size);
 
     // rotates passed 32 bits cyclically to the left
     // n - passed number, cycle - number of bits for cycle
@@ -89,7 +76,7 @@ public:
 
     // encrypts blocks for a round
     // blocks - map of right, left block, round_num - round number
-    void round_encrypt(std::map<std::string, int64_t> & blocks, int round_num);
+    void round_encrypt(std::map<std::string, uint64_t> &blocks, int round_num);
 
     // encrypts passed data with previously defined key
     int64_t encrypt(int64_t data);

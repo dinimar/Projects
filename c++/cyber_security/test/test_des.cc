@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(des_divide_key)
 {
   int64_t key = 0x00FFFFFFFFFFFFFF; // raw key
 
-  std::map<std::string, int64_t> key_parts = DES::divide(key, DES::key_masks, 28);
+  std::map<std::string, uint64_t> key_parts = DES::divide(key, DES::key_masks, 28);
 
   BOOST_CHECK_BITWISE_EQUAL(key_parts["left"], key_parts["right"]);
 }
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(des_divide_data)
 {
   int64_t key = 0x00F0000FF0505005; // raw data
 
-  std::map<std::string, int64_t> data_parts = DES::divide(key, DES::key_masks, 28);
+  std::map<std::string, uint64_t> data_parts = DES::divide(key, DES::key_masks, 28);
 
   BOOST_CHECK_BITWISE_EQUAL(data_parts["left"], (int64_t)0xF0000FF);
   BOOST_CHECK_BITWISE_EQUAL(data_parts["right"], (int64_t)0x0505005);
@@ -53,13 +53,20 @@ BOOST_AUTO_TEST_CASE(des_divide_data)
 
 BOOST_AUTO_TEST_CASE(des_restore_key)
 {
-  std::map<std::string, int64_t> key_parts;
+  std::map<std::string, uint64_t> key_parts;
   key_parts["left"] = 0x0FFFFFFF;
   key_parts["right"] = 0x0FFFFFFF;
 
-  int64_t rest_key = DES::restore_key(key_parts);
+  int64_t rest_key = DES::restore_data(key_parts, 28);
 
   BOOST_CHECK_BITWISE_EQUAL(0x00FFFFFFFFFFFFFF, rest_key);
+
+  std::map<std::string, uint64_t> data_parts = {
+      {"left", (int64_t)0x0A4CD995},
+      {"right", (int64_t)0x43423234}};
+
+  int64_t rest_data = DES::restore_data(data_parts, 32);
+  BOOST_CHECK_BITWISE_EQUAL((uint64_t)0x0A4CD99543423234, rest_data);
 }
 
 BOOST_AUTO_TEST_CASE(des_permutate_r_block)
@@ -229,7 +236,7 @@ BOOST_AUTO_TEST_CASE(des_round_encrypt)
 {
   int64_t key = 0x133457799BBCDFF1;
   int64_t data = 0x123456789ABCDEF;
-  std::map<std::string, int64_t> blocks = {{"left", 0xCC00CCFF}, {"right", 0xF0AAF0AA}};
+  std::map<std::string, uint64_t> blocks = {{"left", 0xCC00CCFF}, {"right", 0xF0AAF0AA}};
 
   DES des(key); // initialize object
 
@@ -248,7 +255,7 @@ BOOST_AUTO_TEST_CASE(des_round_encrypt)
   des.round_encrypt(blocks, 3);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0xA25C0BF4, blocks["left"]);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x77220045, blocks["right"]);
-    
+
   des.round_encrypt(blocks, 4);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x77220045, blocks["left"]);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x8A4FA637, blocks["right"]);
@@ -305,5 +312,6 @@ BOOST_AUTO_TEST_CASE(des_encrypt)
 
   DES des(key); // initialize object
 
-  // BOOST_CHECK_BITWISE_EQUAL(0x8000000000000000, des.encrypt(data));
+  int64_t res = des.encrypt(data);
+  BOOST_CHECK_BITWISE_EQUAL((int64_t)0x85E813540F0AB405, res);
 }
