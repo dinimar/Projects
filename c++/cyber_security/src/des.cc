@@ -261,7 +261,7 @@ void DES::round_decrypt(std::map<std::string, uint64_t> &blocks, int round_num)
     std::swap(blocks["left"], blocks["right"]);          // swap values
 }
 
-int64_t DES::encrypt(int64_t data)
+uint64_t DES::encrypt(uint64_t data)
 {
     data = permutate(data, 64, ip_table);        // initial permutation
     data_blocks_ = divide(data, data_masks, 32); // divide on L, R blocks
@@ -271,7 +271,7 @@ int64_t DES::encrypt(int64_t data)
         round_encrypt(data_blocks_, i);
 
     std::swap(data_blocks_["left"], data_blocks_["right"]); // reverse blocks
-    int64_t enc_data = restore_data(data_blocks_, 32);      // restore data from blocks
+    uint64_t enc_data = restore_data(data_blocks_, 32);      // restore data from blocks
 
     return permutate(enc_data, 64, ip_inv_table); // final permutation
 }
