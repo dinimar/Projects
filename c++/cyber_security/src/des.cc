@@ -166,6 +166,21 @@ int64_t DES::permutate(int64_t data, int size, const std::vector<int> &table)
     return perm_data;
 }
 
+uint64_t DES::reverse_permutate(uint64_t data, int size, const std::vector<int> & table)
+{
+    int64_t unperm_data = 0;    // zero-initialized unpermutated data
+
+    for (size_t i = 0; i < table.size(); i++)
+    {
+        // bit shifting by 0, 1 till 63 bits,
+        // a value need decrease by 1 to get index
+        unperm_data += (get_nth_bit(i, size, data) << table.size() - table[i]);
+    }
+
+    return unperm_data;
+}
+
+
 void DES::s_func(int64_t &right_block)
 {
     int64_t tmp_left = 0;

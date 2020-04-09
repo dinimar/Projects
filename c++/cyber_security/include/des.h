@@ -69,6 +69,7 @@ public:
 
     // permutation functions
     static int64_t permutate(int64_t data, int size, const std::vector<int> &table);
+    static uint64_t reverse_permutate(uint64_t data, int size, const std::vector<int> & table);
 
     // generates round key
     // round_num - rounder number [0..15]

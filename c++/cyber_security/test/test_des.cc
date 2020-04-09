@@ -321,3 +321,16 @@ BOOST_AUTO_TEST_CASE(des_encrypt)
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x2000000000000000, des_vector_key.encrypt(0x2E8653104F3834EA));
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0x1000000000000000, des_vector_key.encrypt(0x4BD388FF6CD81D4F));
 }
+
+BOOST_AUTO_TEST_CASE(des_reverse_permutate)
+{
+  // fairy-tail example
+  uint64_t un_data = 0x9A;
+  std::vector<int> t_table = {1, 2, 7, 5, 4, 6, 8, 3};
+  uint64_t t_data = DES::permutate(un_data, 8, t_table);
+  BOOST_CHECK_BITWISE_EQUAL(un_data, DES::reverse_permutate(t_data, 8, t_table));
+  
+  // real-world example
+  uint64_t perm_data = 0x85E813540F0AB405;
+  BOOST_CHECK_BITWISE_EQUAL(0x0A4CD99543423234, DES::reverse_permutate(perm_data, 64, DES::ip_inv_table));
+}
