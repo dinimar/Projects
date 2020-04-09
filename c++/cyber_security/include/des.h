@@ -93,6 +93,12 @@ public:
     uint64_t encrypt(uint64_t data);
     // decrypts ecnrypted data with previously defined key
     uint64_t decrypt(uint64_t enc_data);
+
+    // encrypts all blocks in vector
+    void encryptN(std::vector<uint64_t> & data);
+    // decrypts all blocks in vector
+    void decryptN(std::vector<uint64_t> & data);
+
 };
 
 #endif

@@ -291,3 +291,15 @@ uint64_t DES::decrypt(uint64_t enc_data)
 
     return reverse_permutate(raw_data, 64, ip_table);
 }
+
+void DES::encryptN(std::vector<uint64_t> & raw_vector)
+{
+    for (uint64_t & block: raw_vector)
+        block = encrypt(block);
+}
+
+void DES::decryptN(std::vector<uint64_t> & enc_vector)
+{
+    for (uint64_t & block: enc_vector)
+        block = decrypt(block);
+}
