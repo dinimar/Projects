@@ -292,14 +292,20 @@ uint64_t DES::decrypt(uint64_t enc_data)
     return reverse_permutate(raw_data, 64, ip_table);
 }
 
-void DES::encryptN(std::vector<uint64_t> & raw_vector)
+void DES::encryptN(std::vector<uint64_t> & raw_vector, uint64_t gamma)
 {
-    for (uint64_t & block: raw_vector)
-        block = encrypt(block);
+    for (size_t i=0; i<raw_vector.size(); i++)
+    {
+        gamma = encrypt(gamma);
+        raw_vector[i] = bitwise_sum(gamma, raw_vector[i]);
+    }
 }
 
-void DES::decryptN(std::vector<uint64_t> & enc_vector)
+void DES::decryptN(std::vector<uint64_t> & enc_vector, uint64_t gamma)
 {
-    for (uint64_t & block: enc_vector)
-        block = decrypt(block);
+    for (size_t i=0; i<enc_vector.size(); i++)
+    {   
+        gamma = decrypt(gamma);
+        enc_vector[i] = bitwise_sum(gamma, enc_vector[i]);
+    }
 }

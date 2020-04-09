@@ -424,3 +424,21 @@ BOOST_AUTO_TEST_CASE(des_decrypt)
   BOOST_CHECK_BITWISE_EQUAL((uint64_t)0x2E8653104F3834EA, des_vector_key.decrypt(0x2000000000000000));
   BOOST_CHECK_BITWISE_EQUAL((uint64_t)0x4BD388FF6CD81D4F, des_vector_key.decrypt(0x1000000000000000));
 }
+
+BOOST_AUTO_TEST_CASE(des_encryptN_decryptN)
+{
+  std::vector<uint64_t> raw_blocks, copy_blocks = {
+    0x95F8A5E5DD31D900, 
+    0xDD7F121CA5015619, 
+    0x2E8653104F3834EA};
+  uint64_t gamma = 0x4BD388FF6CD81D4F;
+  uint64_t key = 0x133457799BBCDFF1;
+  
+  DES des(key);
+  
+  des.encryptN(raw_blocks, gamma);
+  des.decryptN(raw_blocks, gamma);
+
+  for (size_t i=0; i<raw_blocks.size(); i++)
+    BOOST_CHECK_BITWISE_EQUAL(raw_blocks[i], copy_blocks[i]);
+}

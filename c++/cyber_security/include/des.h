@@ -44,8 +44,6 @@ public:
     static const std::vector<uint8_t> ps_1_key_table;
     static const std::vector<uint8_t> pc_2_key_table;
 
-    // static const int32_t rotation_key_mask = 0b00001111111111111111111111111111; // 28-bit mask
-
     // returns nth (by index) bit of passed bit sequence
     static uint64_t get_nth_bit(const uint8_t & n, const uint8_t & size, const uint64_t & data);
 
@@ -94,10 +92,14 @@ public:
     // decrypts ecnrypted data with previously defined key
     uint64_t decrypt(uint64_t enc_data);
 
-    // encrypts all blocks in vector
-    void encryptN(std::vector<uint64_t> & data);
-    // decrypts all blocks in vector
-    void decryptN(std::vector<uint64_t> & data);
+    // encrypts all blocks in vector in OFB mode
+    // raw_data - vector of raw blocks
+    // gamma - vector of initialization for gamma function
+    void encryptN(std::vector<uint64_t> & raw_data, uint64_t gamma);
+    // decrypts all blocks in vector in OFB mode
+    // raw_data - vector of raw blocks
+    // gamma - vector of initialization for gamma function
+    void decryptN(std::vector<uint64_t> & enc_data, uint64_t gamma);
 
 };
 
