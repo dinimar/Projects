@@ -247,8 +247,8 @@ int64_t DES::encrypt(int64_t data)
     for (size_t i = 0; i < 16; i++)
         round_encrypt(data_blocks_, i);
 
-    std::swap(data_blocks_["left"], data_blocks_["right"]); // reverse blocks
-    int64_t res_data = restore_data(data_blocks_, 32);      // restore data from blocks
+    std::swap(data_blocks_["left"], data_blocks_["right"]);     // reverse blocks
+    int64_t res_data = restore_data(data_blocks_, 32);          // restore data from blocks
 
-    return permutate(res_data, 64, ip_inv_table); // final permutation
+    return permutate(res_data, 64, ip_inv_table);               // final permutation
 }
