@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(des_s_box)
 
 BOOST_AUTO_TEST_CASE(des_s_func)
 {
-  int64_t a = 0x12;          // 18
+  uint64_t a = 0x12;         // 18
   a += ((int64_t)0x11 << 6); // 17
   a += ((int64_t)0x3 << 12); // 3
   a += ((int64_t)0x2 << 18); // 2
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(des_s_func)
 
 BOOST_AUTO_TEST_CASE(des_perm)
 {
-  std::vector<int> table = {2, 4, 1, 4};
+  std::vector<uint8_t> table = {2, 4, 1, 4};
   int64_t data = 0x5;
 
   int64_t perm_data = DES::permutate(data, 4, table);
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(des_P_permutation)
 
 BOOST_AUTO_TEST_CASE(des_P_S_permutations)
 {
-  int64_t left_block, right_block = 0x6117BA866527;
+  uint64_t left_block, right_block = 0x6117BA866527;
   DES::s_func(right_block);
 
   right_block = DES::permutate(right_block, 32, DES::p_table);
@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE(des_reverse_permutate)
 {
   // fairy-tail example
   uint64_t un_data = 0x9A;
-  std::vector<int> t_table = {1, 2, 7, 5, 4, 6, 8, 3};
+  std::vector<uint8_t> t_table = {1, 2, 7, 5, 4, 6, 8, 3};
   uint64_t t_data = DES::permutate(un_data, 8, t_table);
   BOOST_CHECK_BITWISE_EQUAL(un_data, DES::reverse_permutate(t_data, 8, t_table));
 

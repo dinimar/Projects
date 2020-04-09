@@ -8,13 +8,13 @@
 class DES
 {
 private:
-    int64_t key_; // key for encryption/decryption using only last 7 bytes
+    uint64_t key_; // key for encryption/decryption using only last 7 bytes
     std::map<std::string, uint64_t> data_blocks_;
 
 public:
     // Constructor
     // Initializes key for encryption/decryption
-    DES(int64_t key) : key_(key)
+    DES(uint64_t key) : key_(key)
     {
         // initialize all round keys
         for (size_t i = 0; i < 16; i++)
@@ -29,36 +29,36 @@ public:
     DES &operator=(DES &&des) = default;
     virtual ~DES() = default;
 
-    std::vector<int64_t> round_keys; // keys for each of 16 round of encryption
+    std::vector<uint64_t> round_keys; // keys for each of 16 round of encryption
 
     // https://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_(IP)
-    static const std::vector<int> ip_table;
-    static const std::vector<int> r_block_table;
-    static const std::vector<int> ip_inv_table;
+    static const std::vector<uint8_t> ip_table;
+    static const std::vector<uint8_t> r_block_table;
+    static const std::vector<uint8_t> ip_inv_table;
     // 8 S-boxes with 4x16 table
-    static const std::vector<std::vector<std::vector<int8_t>>> s_box_table;
-    static const std::vector<int> p_table;
+    static const std::vector<std::vector<std::vector<uint8_t>>> s_box_table;
+    static const std::vector<uint8_t> p_table;
 
-    static const std::map<std::string, int64_t> key_masks;
-    static const std::map<std::string, int64_t> data_masks;
-    static const std::vector<int> ps_1_key_table;
-    static const std::vector<int> pc_2_key_table;
+    static const std::map<std::string, uint64_t> key_masks;
+    static const std::map<std::string, uint64_t> data_masks;
+    static const std::vector<uint8_t> ps_1_key_table;
+    static const std::vector<uint8_t> pc_2_key_table;
 
-    static const int32_t rotation_key_mask = 0b00001111111111111111111111111111; // 28-bit mask
+    // static const int32_t rotation_key_mask = 0b00001111111111111111111111111111; // 28-bit mask
 
     // returns nth (by index) bit of passed bit sequence
-    static int64_t get_nth_bit(int n, int size, int64_t data);
+    static uint64_t get_nth_bit(const uint8_t & n, const uint8_t & size, const uint64_t & data);
 
     // returns nth 6-bit block (by index) of passed bit sequence
     // help function for S permutation
-    static int64_t extract_block6(int n, const int64_t &data);
+    static uint64_t extract_block6(const uint8_t n, const uint64_t & data);
 
     // transforms passed 6-bit block into 4-bit block from S box table
     // arguments: n - block number [0-8]; data - block
-    static int64_t s_box(int n, int64_t data);
+    static uint64_t s_box(const uint8_t n, const uint64_t data);
 
     // divides data by provided masks and their lenghts
-    static std::map<std::string, uint64_t> divide(int64_t data, std::map<std::string, int64_t> masks, int mask_length);
+    static std::map<std::string, uint64_t> divide(const uint64_t & data, const std::map<std::string, uint64_t> & masks, const uint8_t & mask_length);
 
     // restores 56-bit from 28-bit left & right parts
     static int64_t restore_data(std::map<std::string, uint64_t> data_blocks, int block_size);
@@ -74,11 +74,11 @@ public:
     static int64_t bitwise_sum(int64_t summand1, int64_t summand2);
 
     // updates left & right block via s_box permutation
-    static void s_func(int64_t &left_block);
+    static void s_func(uint64_t & left_block);
 
     // permutation functions
-    static int64_t permutate(int64_t data, int size, const std::vector<int> &table);
-    static uint64_t reverse_permutate(uint64_t data, int size, const std::vector<int> &table);
+    static int64_t permutate(const uint64_t & data, const uint8_t & size, const std::vector<uint8_t> & table);
+    static uint64_t reverse_permutate(const uint64_t & data, const uint8_t & size, const std::vector<uint8_t> &table);
 
     // generates round key
     // round_num - rounder number [0..15]
