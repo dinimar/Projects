@@ -91,6 +91,8 @@ public:
 
     // encrypts passed data with previously defined key
     int64_t encrypt(int64_t data);
+    // decrypts ecnrypted data with previously defined key
+    uint64_t decrypt(uint64_t enc_data);
 };
 
 #endif

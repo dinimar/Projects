@@ -271,7 +271,23 @@ int64_t DES::encrypt(int64_t data)
         round_encrypt(data_blocks_, i);
 
     std::swap(data_blocks_["left"], data_blocks_["right"]); // reverse blocks
-    int64_t res_data = restore_data(data_blocks_, 32);      // restore data from blocks
+    int64_t enc_data = restore_data(data_blocks_, 32);      // restore data from blocks
 
-    return permutate(res_data, 64, ip_inv_table); // final permutation
+    return permutate(enc_data, 64, ip_inv_table); // final permutation
+}
+
+uint64_t DES::decrypt(uint64_t enc_data)
+{
+    enc_data = reverse_permutate(enc_data, 64, ip_inv_table); // inverse final permutation
+
+    data_blocks_ = divide(enc_data, data_masks, 32);        // divide data on blocks (inverse of restore_data())
+    std::swap(data_blocks_["left"], data_blocks_["right"]); // inverse reverse blocks
+
+    // 16 decryption rounds
+    for (int i = 15; i >= 0; i--)
+        round_decrypt(data_blocks_, i);
+
+    uint64_t raw_data = restore_data(data_blocks_, 32); // restore one block of data (inverse of divide())
+
+    return reverse_permutate(raw_data, 64, ip_table);
 }

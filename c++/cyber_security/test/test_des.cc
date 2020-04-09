@@ -408,3 +408,19 @@ BOOST_AUTO_TEST_CASE(des_round_decrypt)
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0xCC00CCFF, blocks["left"]);
   BOOST_CHECK_BITWISE_EQUAL((int64_t)0xF0AAF0AA, blocks["right"]);
 }
+
+BOOST_AUTO_TEST_CASE(des_decrypt)
+{
+  uint64_t key = 0x133457799BBCDFF1;
+  uint64_t raw_data = 0x123456789ABCDEF;
+  uint64_t enc_data = 0x85E813540F0AB405;
+  DES des(key); // initialize object
+
+  BOOST_CHECK_BITWISE_EQUAL(raw_data, des.decrypt(enc_data));
+
+  DES des_vector_key(0x0101010101010101);
+  BOOST_CHECK_BITWISE_EQUAL((uint64_t)0x95F8A5E5DD31D900, des_vector_key.decrypt(0x8000000000000000));
+  BOOST_CHECK_BITWISE_EQUAL((uint64_t)0xDD7F121CA5015619, des_vector_key.decrypt(0x4000000000000000));
+  BOOST_CHECK_BITWISE_EQUAL((uint64_t)0x2E8653104F3834EA, des_vector_key.decrypt(0x2000000000000000));
+  BOOST_CHECK_BITWISE_EQUAL((uint64_t)0x4BD388FF6CD81D4F, des_vector_key.decrypt(0x1000000000000000));
+}
