@@ -166,9 +166,9 @@ int64_t DES::permutate(int64_t data, int size, const std::vector<int> &table)
     return perm_data;
 }
 
-uint64_t DES::reverse_permutate(uint64_t data, int size, const std::vector<int> & table)
+uint64_t DES::reverse_permutate(uint64_t data, int size, const std::vector<int> &table)
 {
-    int64_t unperm_data = 0;    // zero-initialized unpermutated data
+    int64_t unperm_data = 0; // zero-initialized unpermutated data
 
     for (size_t i = 0; i < table.size(); i++)
     {
@@ -179,7 +179,6 @@ uint64_t DES::reverse_permutate(uint64_t data, int size, const std::vector<int> 
 
     return unperm_data;
 }
-
 
 void DES::s_func(int64_t &right_block)
 {
@@ -242,15 +241,24 @@ int64_t DES::restore_data(std::map<std::string, uint64_t> data_parts, int block_
 
 void DES::round_encrypt(std::map<std::string, uint64_t> &blocks, int round_num)
 {
-    int64_t r_key = round_key(round_num);
-
     int64_t res = permutate(blocks["right"], 32, r_block_table); // result of e_function
-    res = bitwise_sum(res, r_key);                               // bitwise sum with round key
+    res = bitwise_sum(res, round_keys[round_num]);               // bitwise sum with round key
     s_func(res);                                                 // result of s_function
     res = permutate(res, 32, p_table);                           // result of p_function
 
     blocks["left"] = bitwise_sum(blocks["left"], res); // bitwise sum of L and R, update L
     std::swap(blocks["left"], blocks["right"]);        // swap values
+}
+
+void DES::round_decrypt(std::map<std::string, uint64_t> &blocks, int round_num)
+{
+    int64_t res = permutate(blocks["left"], 32, r_block_table); // result of e_function
+    res = bitwise_sum(res, round_keys[round_num]);              // bitwise sum with round key
+    s_func(res);                                                // result of s_function
+    res = permutate(res, 32, p_table);                          // result of p_function
+
+    blocks["right"] = bitwise_sum(blocks["right"], res); // bitwise sum of R(new) and res(R_old_modified), update R (inverse operation)
+    std::swap(blocks["left"], blocks["right"]);          // swap values
 }
 
 int64_t DES::encrypt(int64_t data)
@@ -262,8 +270,8 @@ int64_t DES::encrypt(int64_t data)
     for (size_t i = 0; i < 16; i++)
         round_encrypt(data_blocks_, i);
 
-    std::swap(data_blocks_["left"], data_blocks_["right"]);     // reverse blocks
-    int64_t res_data = restore_data(data_blocks_, 32);          // restore data from blocks
+    std::swap(data_blocks_["left"], data_blocks_["right"]); // reverse blocks
+    int64_t res_data = restore_data(data_blocks_, 32);      // restore data from blocks
 
-    return permutate(res_data, 64, ip_inv_table);               // final permutation
+    return permutate(res_data, 64, ip_inv_table); // final permutation
 }

@@ -14,13 +14,22 @@ private:
 public:
     // Constructor
     // Initializes key for encryption/decryption
-    DES(int64_t key) : key_(key){};
+    DES(int64_t key) : key_(key)
+    {
+        // initialize all round keys
+        for (size_t i = 0; i < 16; i++)
+        {
+            round_keys.push_back(round_key(i));
+        }
+    };
 
     DES(const DES &des) = default;
     DES(DES &&des) = default;
     DES &operator=(const DES &des) = default;
     DES &operator=(DES &&des) = default;
     virtual ~DES() = default;
+
+    std::vector<int64_t> round_keys; // keys for each of 16 round of encryption
 
     // https://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_(IP)
     static const std::vector<int> ip_table;
@@ -69,7 +78,7 @@ public:
 
     // permutation functions
     static int64_t permutate(int64_t data, int size, const std::vector<int> &table);
-    static uint64_t reverse_permutate(uint64_t data, int size, const std::vector<int> & table);
+    static uint64_t reverse_permutate(uint64_t data, int size, const std::vector<int> &table);
 
     // generates round key
     // round_num - rounder number [0..15]
@@ -78,6 +87,7 @@ public:
     // encrypts blocks for a round
     // blocks - map of right, left block, round_num - round number
     void round_encrypt(std::map<std::string, uint64_t> &blocks, int round_num);
+    void round_decrypt(std::map<std::string, uint64_t> &blocks, int round_num);
 
     // encrypts passed data with previously defined key
     int64_t encrypt(int64_t data);
