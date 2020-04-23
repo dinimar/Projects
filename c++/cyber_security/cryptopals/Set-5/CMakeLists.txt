@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 14)              # Enable c++14 standard
 enable_testing()
 
 # Add des.cpp file of project root directory as source file
-set(SOURCE_FILES src/main.cc)
+set(SOURCE_FILES src/main.cc src/diffie-hellman.cc)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 # add_executable(simple_example ${SOURCE_FILES})
@@ -21,7 +21,7 @@ set(SOURCE_FILES src/main.cc)
 find_package(Boost 1.58 REQUIRED)
 
 add_executable(exec ${SOURCE_FILES})
-# target_include_directories(exec PUBLIC include)
+target_include_directories(exec PUBLIC include)
 
 # creates the executable
 # add_executable(test_executable test/test_des.cc src/des.cc)
