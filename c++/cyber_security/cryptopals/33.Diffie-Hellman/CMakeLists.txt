@@ -15,10 +15,10 @@ set(SOURCE_FILES src/main.cc)
 # conan_basic_setup()
 
 # replace XX with the version you have
-set(Boost_ADDITIONAL_VERSIONS "1.66" "1.66.0")
+# set(Boost_ADDITIONAL_VERSIONS "1.58" "1.58.0")
 
 # finds boost, triggers an error otherwise
-# find_package(Boost 1.66 REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost 1.58 REQUIRED)
 
 add_executable(exec ${SOURCE_FILES})
 # target_include_directories(exec PUBLIC include)
