@@ -8,6 +8,13 @@ class DiffieHellMan:
                     '07cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed5'
                     '29077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff', 16)
 
+    def p_(self):
+        return self.p
+
+    
+    def g_(self):
+        return self.g
+
     def mod_exp(self):
         pow(self.g, self.x_lower, self.p) 
 
