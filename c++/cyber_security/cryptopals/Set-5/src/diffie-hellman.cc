@@ -12,7 +12,7 @@ cpp_int modExp(const cpp_int &g, const cpp_int &x, const cpp_int p)
     return powm(g, x, p);
 }
 
-cpp_int publicSessionKey(const cpp_int &p, const cpp_int &g)
+cpp_int xLower(const cpp_int & p)
 {
     using namespace boost::multiprecision;
     using namespace boost::random;
@@ -24,10 +24,15 @@ cpp_int publicSessionKey(const cpp_int &p, const cpp_int &g)
     mt19937 mt;
     uniform_int_distribution<cpp_int> ui(0, cpp_int(1) << 1024);
 
-    cpp_int x = ui(mt) % p;
+    return ui(mt) % p;    
+}
+
+cpp_int publicSessionKey(const cpp_int &p, const cpp_int &g)
+{
+    cpp_int x = xLower(p);
     cpp_int X = modExp(g, x, p);
 
-    cpp_int y = ui(mt) % p;
+    cpp_int y = xLower(p);
     cpp_int Y = modExp(g, y, p);
 
     cpp_int sX = modExp(X, y, p);

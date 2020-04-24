@@ -18,10 +18,14 @@ set(SOURCE_FILES src/main.cc src/diffie-hellman.cc)
 # set(Boost_ADDITIONAL_VERSIONS "1.58" "1.58.0")
 
 # finds boost, triggers an error otherwise
+set(OPENSSL_USE_STATIC_LIBS TRUE)
 find_package(Boost 1.58 REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 add_executable(exec ${SOURCE_FILES})
 target_include_directories(exec PUBLIC include)
+target_link_libraries(exec ${OPENSSL_LIBRARIES})
+# target_link_libraries(${PROJECT_NAME} ${OPENSSL_CRYPTO})
 
 # creates the executable
 # add_executable(test_executable test/test_des.cc src/des.cc)
