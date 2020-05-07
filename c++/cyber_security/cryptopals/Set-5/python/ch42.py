@@ -43,7 +43,7 @@ if __name__ == "__main__":
     # asn1 string for sha-1 (from rfc 3447)
     asn1 = b"\x30\x21\x30\x09\x06\x05\x2b\x0e\x03\x02\x1a\x05\x00\x04\x14"
     # a block that looks like PKCS1.5 standard format
-    block = b'\x00\x01\xff\x00' + asn1 + unhexlify(sha1(msg))
+    block = b'\x00\x01\xff\x00' + asn1 + unhexlify(sha1(msg).hexdigest())
     garbage = (((bit_length + 7) // 8) - len(block)) * b'\x00'
     block += garbage
     
